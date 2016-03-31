@@ -1,0 +1,8 @@
+version: '2'
+services:
+  common:
+    restart: unless-stopped
+    volumes:
+    - /usr/share/zoneinfo/Europe/Kaliningrad:/etc/localtime:ro
+    logging:
+      driver: "journald"
