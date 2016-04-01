@@ -24,9 +24,6 @@ urxvt.scrollTtyKeypress: true
 urxvt.lineSpace: -1
 urxvt.letterSpace: -1
 
-! Base16 Google
-! Scheme: Seth Wright (http://sethawright.com)
-
 #define base00 #1d1f21
 #define base01 #282a2e
 #define base02 #373b41
@@ -44,9 +41,9 @@ urxvt.letterSpace: -1
 #define base0E #A36AC7
 #define base0F #3971ED
 
-*.foreground:   base05
+*.foreground:   base03
 *.background:   base00
-*.cursorColor:  base05
+*.cursorColor:  base03
 
 *.color0:       base00
 *.color1:       base08
@@ -55,7 +52,7 @@ urxvt.letterSpace: -1
 *.color4:       base0D
 *.color5:       base0E
 *.color6:       base0C
-*.color7:       base05
+*.color7:       base04
 
 *.color8:       base03
 *.color9:       base09
