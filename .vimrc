@@ -7,6 +7,7 @@ set undodir=~/.vim/undo
 
 set incsearch
 set ignorecase
+set smartcase
 
 set listchars=tab:>.,trail:.,extends:#,nbsp:.
 set list

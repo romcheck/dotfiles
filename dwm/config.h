@@ -1,9 +1,5 @@
-/* See LICENSE file for copyright and license details. */
-
 /* appearance */
-static const char *fonts[] = {
-	"xft:notomono:size=14"
-};
+static const char *fonts[] = { "xft:notomono:size=14" };
 static const char dmenufont[]       = "xft:notomono:size=14";
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
@@ -35,7 +31,7 @@ static const int resizehints = 0;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[M]",      monocle }, /* first entry is default */
+	{ "[0]",      monocle }, /* first entry is default */
 	{ "[]=",      tile },
 };
 

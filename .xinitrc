@@ -7,7 +7,7 @@ autocutsel -selection PRIMARY -fork -pause 500 &
 
 setxkbmap -layout us,ru -option grp:caps_toggle,compose:ralt
 
-xinput set-button-map 14 1 3 2 4 5 6 7
+xinput set-button-map 14 1 3 2 4 5 7 6
 xinput set-prop 14 284 -0.75
 xinput set-prop 14 278 1
 
