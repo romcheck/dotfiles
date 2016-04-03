@@ -123,7 +123,7 @@ mark h ~/
 
 command! df df -h %m 2> /dev/null
 command! diff vim -d %f %F
-command! 7z 7z a %f.7z %f
+command! z 7z a %f.7z %f
 command! run !! ./%f
 command! make !!make %a
 command! mkcd :mkdir %a | cd %a
