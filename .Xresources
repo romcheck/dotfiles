@@ -56,8 +56,8 @@ urxvt.letterSpace: -1
 
 *.color8:       base03
 *.color9:       base09
-*.color10:      base01
-*.color11:      base02
+*.color10:      base02
+*.color11:      base03
 *.color12:      base04
 *.color13:      base06
 *.color14:      base0F
