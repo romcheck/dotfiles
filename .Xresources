@@ -24,4 +24,4 @@ urxvt.scrollTtyKeypress: true
 urxvt.lineSpace: -1
 urxvt.letterSpace: -1
 
-#include "base16-google.dark.xresources"
+#include ".base16-google.dark.xresources"
