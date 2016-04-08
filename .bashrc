@@ -29,3 +29,4 @@ export PROMPT_COMMAND='echo -ne "\033]2;${USER}@${HOSTNAME}:$PWD\007"'
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 ssh-add -l >/dev/null || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
+ssh-add -l >/dev/null || alias git='ssh-add -l >/dev/null || ssh-add && unalias git; git';
