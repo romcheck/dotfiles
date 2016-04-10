@@ -27,4 +27,3 @@ export EDITOR=vim
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 ssh-add -l >/dev/null || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
-ssh-add -l >/dev/null || alias git='ssh-add -l >/dev/null || ssh-add && unalias git; git';
