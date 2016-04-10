@@ -9,7 +9,7 @@ set incsearch
 set ignorecase
 set smartcase
 
-set listchars=tab:>.,trail:.,extends:#,nbsp:.
+set listchars=tab:>.,trail:.,nbsp:.
 set list
 
 set scrolloff=4
@@ -20,6 +20,7 @@ set numberwidth=1
 set splitbelow
 set splitright
 set title
+set titlestring=%F
 
 filetype plugin indent on
 syntax on
@@ -29,7 +30,6 @@ colorscheme base16-google
 map <silent> <f3> :silent set hlsearch! hlsearch?<cr>
 map <silent> <f4> :set invnumber<cr>
 map <silent> q :xa<cr>
-map <silent> й :xa<cr>
 
 function! ResCur()
   if line("'\"") <= line("$")
@@ -42,7 +42,5 @@ augroup resCur
   autocmd!
   autocmd BufWinEnter * call ResCur()
 augroup END
-
-set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
 
 let g:netrw_banner=0

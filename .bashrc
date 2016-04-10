@@ -10,7 +10,6 @@ PS1='\$ '
 alias ls='ls --color=auto'
 alias vi='vim'
 alias grep='grep --ignore-case --color'
-alias sa='yaourt -Suya'
 
 shopt -s checkwinsize
 
@@ -24,7 +23,6 @@ export HISTCONTROL=ignoreboth:erasedups
 export HISTIGNORE='history*'
 export BROWSER=chromium
 export EDITOR=vim
-export PROMPT_COMMAND='echo -ne "\033]2;${USER}@${HOSTNAME}:$PWD\007"'
 
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 

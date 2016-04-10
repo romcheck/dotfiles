@@ -56,7 +56,7 @@ highlight Executable cterm=bold ctermfg=green ctermbg=default
 highlight Selected cterm=bold ctermfg=magenta ctermbg=default
 highlight CurrLine cterm=bold,reverse ctermfg=default ctermbg=default
 highlight TopLine cterm=none ctermfg=default ctermbg=default
-highlight TopLineSel cterm=bold ctermfg=default ctermbg=default
+highlight TopLineSel cterm=bold ctermfg=white ctermbg=default
 highlight StatusLine cterm=bold ctermfg=default ctermbg=default
 highlight WildMenu cterm=underline,reverse ctermfg=default ctermbg=default
 highlight CmdLine cterm=none ctermfg=default ctermbg=default
