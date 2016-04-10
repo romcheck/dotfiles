@@ -77,7 +77,6 @@ static Key keys[] = {
 	{ 0,                            0xffc7,    spawn,          {.v = mute } },
 	{ 0,                            0xffc8,    spawn,          {.v = voldn } },
 	{ 0,                            0xffc9,    spawn,          {.v = volup } },
-	{ MODKEY,                       XK_v,      spawn,          {.v = winbox } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = calc } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = chromium } },
 	{ MODKEY,                       XK_q,      spawn,          {.v = tmux } },
@@ -112,7 +111,6 @@ static Key keys[] = {
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button2,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button1,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } }, 
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
