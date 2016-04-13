@@ -11,19 +11,19 @@ setxkbmap -layout us,ru -option grp:caps_toggle,compose:ralt
 #xinput set-prop 13 284 -0.75
 #xinput set-prop 13 278 1
 
-GMAIL.PY=~/bin/gmail.py);
+GMAILPY="~/bin/gmail.py"
 
 while true; do
 
-if [ "$(cat /sys/class/power_supply/AC0/online)" -eq "1" || ! -d /sys/class/power_supply ]; then
+if [ ! -d /sys/class/power_supply/AC0 ] || [ "$(cat /sys/class/power_supply/AC0/online)" -eq "1" ]  then
     BATTERY="";
 else
     BATTERY=$((`cat /sys/class/power_supply/BAT0/energy_now` * 100 / `cat /sys/class/power_supply/BAT0/energy_full`));
     BATTERY="$BATTERY% ";
 fi;
 
-if [ -f GMAIL.PY ]; then
-    GMAIL=$(~/bin/gmail.py);
+if [ -f $(GMAILPY) ]; then
+    GMAIL=$(GMAILPY);
 else
     GMAIL="";
 fi
