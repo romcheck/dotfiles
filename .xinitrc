@@ -7,34 +7,30 @@ autocutsel -selection PRIMARY -fork -pause 1000 &
 
 setxkbmap -layout us,ru -option grp:caps_toggle,compose:ralt
 
-#xinput set-button-map 14 1 3 2 4 5 7 6
-#xinput set-prop 14 284 -0.75
-#xinput set-prop 14 278 1
+#xinput set-button-map 13 1 3 2 4 5 7 6
+#xinput set-prop 13 284 -0.75
+#xinput set-prop 13 278 1
+
+GMAIL.PY=~/bin/gmail.py);
 
 while true; do
 
-#WDEV=wlp3s0
+if [ "$(cat /sys/class/power_supply/AC0/online)" -eq "1" || ! -d /sys/class/power_supply ]; then
+    BATTERY="";
+else
+    BATTERY=$((`cat /sys/class/power_supply/BAT0/energy_now` * 100 / `cat /sys/class/power_supply/BAT0/energy_full`));
+    BATTERY="$BATTERY% ";
+fi;
 
-#if [ "$(cat /sys/class/power_supply/AC0/online)" -eq "1" ]; then
-#    BATTERY="";
-#else
-#    BATTERY=$((`cat /sys/class/power_supply/BAT0/energy_now` * 100 / `cat /sys/class/power_supply/BAT0/energy_full`));
-#    BATTERY="$BATTERY% ";
-#fi;
-#
-#if [ $(cat /sys/class/net/$WDEV/operstate) == "up" ]; then
-#    SSID=$(iw dev $WDEV link |grep SSID | awk '{print $2}');
-#    SSID="$SSID ";
-#else
-#    SSID="";
-#fi;
-
-#GMAIL=$($HOME/bin/gmail.py);
+if [ -f GMAIL.PY ]; then
+    GMAIL=$(~/bin/gmail.py);
+else
+    GMAIL="";
+fi
 
 TIME=$(date '+%R');
 
-#xsetroot -name "$GMAIL$SSID $BATTERY $TIME";
-xsetroot -name "$TIME";
+xsetroot -name "$GMAIL $BATTERY $TIME";
 
 sleep 60;
 
