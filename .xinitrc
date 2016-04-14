@@ -11,8 +11,6 @@ setxkbmap -layout us,ru -option grp:caps_toggle,compose:ralt
 #xinput set-prop 13 284 -0.75
 #xinput set-prop 13 278 1
 
-GMAILPY="~/bin/gmail.py"
-
 while true; do
 
 if [ ! -d /sys/class/power_supply/AC0 ] || [ "$(cat /sys/class/power_supply/AC0/online)" -eq "1" ]  then
@@ -22,15 +20,9 @@ else
     BATTERY="$BATTERY% ";
 fi;
 
-if [ -f $(GMAILPY) ]; then
-    GMAIL=$(GMAILPY);
-else
-    GMAIL="";
-fi
-
 TIME=$(date '+%R');
 
-xsetroot -name "$GMAIL $BATTERY $TIME";
+xsetroot -name "$BATTERY$TIME";
 
 sleep 60;
 
