@@ -449,3 +449,4 @@ nnoremap <f8> :delete<cr>
 " nnoremap <left> <nop>
 
 map q :exit<cr>
+only
