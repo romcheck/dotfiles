@@ -220,7 +220,7 @@ fileviewer *.[1-8] man ./%c | col -b
 " Images
 filextype *.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm
         \ {View in sxiv}
-        \ sxiv,
+        \ sxiv-rifle %c > /dev/null 2>&1 &,
         \ {View in gpicview}
         \ gpicview %c,
         \ {View in shotwell}
