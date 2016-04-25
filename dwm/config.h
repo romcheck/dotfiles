@@ -54,7 +54,6 @@ static const char *tmux[]     = { "urxvtc", "-e", "tmux", "attach", NULL };
 static const char *vifm[]     = { "urxvtc", "-e", "vifm", NULL };
 static const char *vim[]      = { "urxvtc", "-e", "vim", NULL };
 static const char *calc[]     = { "urxvtc", "-e", "calc", NULL };
-static const char *winbox[]   = { "wine", "/home/rv/bin/winbox.exe", NULL };
 static const char *chromium[] = { "chromium", NULL };
 static const char *drive[]    = { "chromium", "https://drive.google.com/drive/#my-drive", NULL };
 static const char *gmail[]    = { "chromium", "https://mail.google.com/mail/u/0/#inbox", NULL };
