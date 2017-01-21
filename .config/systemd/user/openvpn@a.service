@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenVPN connection to %i
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/openvpn --cd %h/.config/openvpn --config %i.conf --daemon openvpn@%i --writepid %t/openvpn@%i.pid
+PIDFile=%t/openvpn@%i.pid
+
+[Install]
+WantedBy=multi-user.target
