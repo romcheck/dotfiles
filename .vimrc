@@ -22,12 +22,12 @@ set splitright
 set title
 set titlestring=%F
 
+set autochdir
+
 filetype plugin indent on
 syntax on
 
 colorscheme base16-google
-
-set background=dark
 
 map <silent> <f3> :silent set hlsearch! hlsearch?<cr>
 map <silent> <f4> :set invnumber<cr>
