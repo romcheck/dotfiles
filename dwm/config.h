@@ -13,7 +13,7 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4" };
+static const char *tags[] = { "1", "2", "3" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -26,7 +26,7 @@ static const Rule rules[] = {
 
 /* layout(s) */
 static const float mfact     = 0.5; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 2;    /* number of clients in master area */
+static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
@@ -60,8 +60,8 @@ static const char *gmail[]    = { "chromium", "https://mail.google.com/mail/u/0/
 static const char *volup[]    = { "sh", "-c", "pactl set-sink-mute @DEFAULT_SINK@ false; pactl set-sink-volume @DEFAULT_SINK@ +10%", NULL };
 static const char *voldn[]    = { "sh", "-c", "pactl set-sink-volume @DEFAULT_SINK@ -10%", NULL };
 static const char *mute[]     = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
-static const char *bridn[]    = { "xbacklight", "-8", "-time", "100", "-steps", "10", NULL };
-static const char *briup[]    = { "xbacklight", "+8", "-time", "100", "-steps", "10", NULL };
+static const char *bridn[]    = { "xbacklight", "-8", NULL };
+static const char *briup[]    = { "xbacklight", "+8", NULL };
 static const char *brimin[]   = { "xbacklight", "-set", "1", NULL };
 
 static Key keys[] = {
