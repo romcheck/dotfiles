@@ -13,7 +13,7 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3" };
+static const char *tags[] = { "1", "2", "3", "4" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -55,13 +55,13 @@ static const char *vifm[]     = { "urxvtc", "-e", "vifm", NULL };
 static const char *vim[]      = { "urxvtc", "-e", "vim", NULL };
 static const char *calc[]     = { "urxvtc", "-e", "calc", NULL };
 static const char *chromium[] = { "chromium", NULL };
-static const char *drive[]    = { "chromium", "https://drive.google.com/drive/#my-drive", NULL };
+static const char *drive[]    = { "chromium", "https://drive.google.com/drive/my-drive", NULL };
 static const char *gmail[]    = { "chromium", "https://mail.google.com/mail/u/0/#inbox", NULL };
 static const char *volup[]    = { "sh", "-c", "pactl set-sink-mute @DEFAULT_SINK@ false; pactl set-sink-volume @DEFAULT_SINK@ +10%", NULL };
 static const char *voldn[]    = { "sh", "-c", "pactl set-sink-volume @DEFAULT_SINK@ -10%", NULL };
 static const char *mute[]     = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
-static const char *bridn[]    = { "xbacklight", "-8", NULL };
-static const char *briup[]    = { "xbacklight", "+8", NULL };
+static const char *bridn[]    = { "xbacklight", "+10", NULL };
+static const char *briup[]    = { "xbacklight", "-10", NULL };
 static const char *brimin[]   = { "xbacklight", "-set", "1", NULL };
 
 static Key keys[] = {
@@ -111,7 +111,7 @@ static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkWinTitle,          0,              Button1,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } }, 
+	{ ClkStatusText,        0,              Button1,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },

@@ -27,8 +27,5 @@ export EDITOR=vim
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 ssh-add -l >/dev/null || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
-
-if [[ -d .docker-machine-bash-completion ]]
-then
-    . .docker-machine-bash-completion/*
-fi
+ssh-add -l >/dev/null || alias git='ssh-add -l >/dev/null || ssh-add && unalias git; git'
+ssh-add -l >/dev/null || alias hg='ssh-add -l >/dev/null || ssh-add && unalias hg; hg'
