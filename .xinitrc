@@ -3,7 +3,7 @@
 urxvtd -q -o -f
 
 autocutsel -fork &
-autocutsel -selection PRIMARY -fork -pause 1000 &
+autocutsel -selection PRIMARY -fork -pause 2000 &
 
 setxkbmap -layout us,ru -option grp:caps_toggle,compose:ralt
 
@@ -16,7 +16,7 @@ else
     BATTERY="$BATTERY%  ";
 fi;
 
-GMAIL=$(~/bin/gmail.py)
+GMAIL=$(~/bin/gmail)
 
 TIME=$(date '+%R');
 
