@@ -63,9 +63,11 @@ static const char *gmail[]    = { "chromium", "https://mail.google.com/mail/u/0/
 static const char *mute[]     = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
 static const char *voldn[]    = { "sh", "-c", "pactl set-sink-volume @DEFAULT_SINK@ -10%", NULL };
 static const char *volup[]    = { "sh", "-c", "pactl set-sink-mute @DEFAULT_SINK@ false; pactl set-sink-volume @DEFAULT_SINK@ +10%", NULL };
+static const char *maim[]     = { "sh", "-c", "maim -s | xclip -selection clipboard -t image/png", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+	{ MODKEY,                       XK_r,      spawn,          {.v = maim } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_semicolon, spawn,       {.v = termcmd } },
 	{ 0,                            0xffc5,    spawn,          {.v = drive } },
