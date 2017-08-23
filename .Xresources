@@ -1,3 +1,5 @@
+Xft.dpi: 144
+
 urxvt.font: xft:notomono:size=14
 urxvt.scrollBar: false
 urxvt.saveLines: 4096
@@ -24,4 +26,5 @@ urxvt.scrollTtyKeypress: true
 urxvt.lineSpace: -1
 urxvt.letterSpace: -1
 
-#include ".base16-google.dark.xresources"
+! "include" requires gcc binary for preprocessing
+#include ".base16-google.dark"

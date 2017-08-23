@@ -1,6 +1,3 @@
-! Base16 Google
-! Scheme: Seth Wright (http://sethawright.com)
-
 #define base00 #1d1f21
 #define base01 #282a2e
 #define base02 #373b41

@@ -3,7 +3,7 @@
 urxvtd -q -o -f
 
 autocutsel -fork &
-autocutsel -selection PRIMARY -fork -pause 2000 &
+autocutsel -selection PRIMARY -fork -pause 1500 &
 
 setxkbmap -layout us,ru -option grp:caps_toggle,compose:ralt
 
@@ -16,11 +16,9 @@ else
     BATTERY="$BATTERY%  ";
 fi;
 
-GMAIL=$(~/bin/gmail)
-
 TIME=$(date '+%R');
 
-xsetroot -name "$GMAIL$BATTERY$TIME";
+xsetroot -name "$BATTERY$TIME";
 
 sleep 60;
 
