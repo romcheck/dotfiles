@@ -26,5 +26,9 @@ urxvt.scrollTtyKeypress: true
 urxvt.lineSpace: -1
 urxvt.letterSpace: -1
 
-! "include" requires gcc binary for preprocessing
+urxvt.perl-ext: default,url-select
+urxvt.keysym.M-u: perl:url-select:select_next
+urxvt.url-select.launcher: /usr/bin/xdg-open
+urxvt.url-select.underline: true
+
 #include ".base16-google.dark"
