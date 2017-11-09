@@ -1,6 +1,6 @@
 /* appearance */
-static const char *fonts[] = { "xft:notomono:size=14" };
-static const char dmenufont[]       = "xft:notomono:size=14";
+static const char *fonts[] = { "xft:notomono:size=12" };
+static const char dmenufont[]       = "xft:notomono:size=12";
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
 static const char normfgcolor[]     = "#aaaaaa";
@@ -50,7 +50,6 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "urxvtc", NULL };
-static const char *tmux[]     = { "urxvtc", "-e", "tmux", "attach", NULL };
 static const char *vifm[]     = { "urxvtc", "-e", "vifm", NULL };
 static const char *vim[]      = { "urxvtc", "-e", "vim", NULL };
 static const char *calc[]     = { "urxvtc", "-e", "calc", NULL };
@@ -80,7 +79,6 @@ static Key keys[] = {
 	{ 0,                            0xffc9,    spawn,          {.v = volup } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = calc } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = chromium } },
-	{ MODKEY,                       XK_q,      spawn,          {.v = tmux } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = vim } },
 	{ MODKEY,                       XK_o,      spawn,          {.v = vifm } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
