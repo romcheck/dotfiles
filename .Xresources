@@ -1,6 +1,6 @@
 Xft.dpi: 144
 
-urxvt.font: xft:notomono:size=14
+urxvt.font: xft:notomono:size=12
 urxvt.scrollBar: false
 urxvt.saveLines: 4096
 urxvt.fading: 25

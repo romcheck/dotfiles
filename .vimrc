@@ -17,12 +17,11 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set numberwidth=1
-set splitbelow
-set splitright
 set title
 set titlestring=%F
 
 set autochdir
+set hidden
 
 filetype plugin indent on
 syntax on
@@ -46,7 +45,5 @@ augroup resCur
 augroup END
 
 let g:netrw_banner = 0
-let g:netrw_browse_split = 4
-let g:netrw_winsize = 25
 
-set hidden
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
