@@ -1,0 +1,13 @@
+cache:
+  mount:
+    - cache1
+    - cache2
+
+pipeline:
+  somejob:
+    image: romcheck/ansible
+    commands:
+    - ls cache1
+    - ls cache2
+    - touch cache1/file1
+    - touch cache2/file2
