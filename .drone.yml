@@ -1,13 +1,25 @@
-cache:
-  mount:
-    - cache1
-    - cache2
-
 pipeline:
-  somejob:
-    image: romcheck/ansible
+  restore-cache:
+    image: plugins/s3-cache:1
+    pull: true
+    endpoint: http://thunderbuild.hxr.team:9001
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
+    restore: true
+
+  build:
+    image: alpine
     commands:
-    - ls cache1
-    - ls cache2
-    - touch cache1/file1
-    - touch cache2/file2
+      - mkdir dir1 dir2
+      - touch dir1/file1 dir2/file2
+
+  rebuild-cache:
+    image: plugins/s3-cache:1
+    pull: true
+    endpoint: http://thunderbuild.hxr.team:9001
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
+    rebuild: true
+    mount:
+      - dir1
+      - dir2
+    when:
+      event: push
