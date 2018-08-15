@@ -9,8 +9,8 @@ pipeline:
   build:
     image: alpine
     commands:
-      - mkdir dir1 dir2
-      - touch dir1/file1 dir2/file2
+      - ls -la dir1
+      - ls -la dir2
 
   rebuild-cache:
     image: plugins/s3-cache:1
