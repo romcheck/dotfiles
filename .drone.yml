@@ -2,7 +2,7 @@ pipeline:
 
   test-ip-6:
     image: alpine
-      network_mode: host
+    network_mode: host
     commands:
     - ip a
     - ip -6 a
