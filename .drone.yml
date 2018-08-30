@@ -1,8 +1,26 @@
 pipeline:
+  restore-cache:
+    image: plugins/s3-cache:1
+    pull: true
+    endpoint: https://ams3.digitaloceanspaces.com
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
+    restore: true
 
-  test-ip-6:
+  build:
     image: alpine
-    network_mode: host
     commands:
-    - ip a
-    - ip -6 a
+    - mkdir dir1 dir2
+    - touch dir1/file1 dir2/file2
+
+  rebuild-cache:
+    image: plugins/s3-cache:1
+    pull: true
+    endpoint: https://ams3.digitaloceanspaces.com
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
+    rebuild: true
+    mount:
+    - dir1
+    - dir2
+    when:
+      event: push
+      status: [ success, failure ]
