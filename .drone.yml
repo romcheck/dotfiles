@@ -1,0 +1,7 @@
+pipeline:
+
+  test-ip-6:
+    image: alpine
+    commands:
+    - ip a
+    - ip -6 a
