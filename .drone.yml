@@ -1,6 +1,0 @@
-pipeline:
-
-  build:
-    image: romcheck/ansible
-    commands:
-    - ansible --version
