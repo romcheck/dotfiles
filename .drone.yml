@@ -3,5 +3,5 @@ pipeline:
   build:
     image: haskell:8.2.2
     commands:
-    - if git log -1 --pretty=%B |grep -i -q '\[sdskip ci\]'; then echo 'clear cache plz'; fi
+    - if git log -1 --pretty=%B |grep -i -q '\[clear cache\]'; then echo 'clear cache plz'; fi
     - echo 'cache cleared'
