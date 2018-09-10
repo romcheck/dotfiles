@@ -1,26 +1,7 @@
 pipeline:
-  restore-cache:
-    image: plugins/s3-cache:1
-    pull: true
-    endpoint: https://ams3.digitaloceanspaces.com
-    secrets: [ aws_access_key_id, aws_secret_access_key ]
-    restore: true
 
   build:
-    image: alpine
+    image: haskell:8.2.2
     commands:
-    - mkdir dir1 dir2
-    - touch dir1/file1 dir2/file2
-
-  rebuild-cache:
-    image: plugins/s3-cache:1
-    pull: true
-    endpoint: https://ams3.digitaloceanspaces.com
-    secrets: [ aws_access_key_id, aws_secret_access_key ]
-    rebuild: true
-    mount:
-    - dir1
-    - dir2
-    when:
-      event: push
-      status: [ success, failure ]
+    - if git log -1 --pretty=%B |grep -i -q '\[sdskip ci\]'; then echo 'clear cache plz'; fi
+    - echo 'cache cleared'
