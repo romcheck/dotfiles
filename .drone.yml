@@ -5,5 +5,7 @@ pipeline:
     commands:
     - if git log -1 --pretty=%B |grep -i -q '\[clear cache\]'; then echo 'clear cache plz'; fi
     - echo 'cache cleared'
+    - echo 'cache cleared'
+    - echo 'cache cleared'
 
 branches: master
