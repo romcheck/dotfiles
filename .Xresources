@@ -26,7 +26,6 @@ urxvt.scrollTtyKeypress: true
 urxvt.lineSpace: -1
 urxvt.letterSpace: -1
 
-! needed urxvt-perls, urxvt-resize-font extensions
 urxvt.perl-ext: default,url-select,keyboard-select,selection-to-clipboard,resize-font
 urxvt.keysym.M-u: perl:url-select:select_next
 urxvt.url-select.launcher: /usr/bin/xdg-open
@@ -35,5 +34,6 @@ urxvt.keysym.C-minus: resize-font:smaller
 urxvt.keysym.C-equal: resize-font:bigger
 urxvt.keysym.C-0: resize-font:reset
 urxvt.keysym.M-Escape: perl:keyboard-select:activate
+urxvt.resize-font.step: 1
 
 #include ".base16-google.dark"
