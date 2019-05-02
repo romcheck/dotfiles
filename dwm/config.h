@@ -78,7 +78,7 @@ static Key keys[] = {
 	{ 0,                            0xffc8,    spawn,          {.v = voldn } },
 	{ 0,                            0xffc9,    spawn,          {.v = volup } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = calc } },
-	{ 0,                            0xffc1,    spawn,          {.v = chromium } },
+	{ 0,                            XK_F1,     spawn,          {.v = chromium } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = vim } },
 	{ MODKEY,                       XK_o,      spawn,          {.v = vifm } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -119,4 +119,3 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        toggletag,      {0} },
 };
-
