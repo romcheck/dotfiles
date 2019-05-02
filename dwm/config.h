@@ -19,7 +19,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4" };
+static const char *tags[] = { "1", "2", "3" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -62,8 +62,6 @@ static const char *calc[]     = { "urxvtc", "-e", "calc", NULL };
 static const char *chromium[] = { "chromium", NULL };
 static const char *bridn[]    = { "xbacklight", "-15", NULL };
 static const char *briup[]    = { "xbacklight", "+15", NULL };
-static const char *drive[]    = { "chromium", "https://drive.google.com/drive/my-drive", NULL };
-static const char *gmail[]    = { "chromium", "https://mail.google.com/mail/u/0/#inbox", NULL };
 static const char *mute[]     = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
 static const char *voldn[]    = { "sh", "-c", "pactl set-sink-volume @DEFAULT_SINK@ -10%", NULL };
 static const char *volup[]    = { "sh", "-c", "pactl set-sink-mute @DEFAULT_SINK@ false; pactl set-sink-volume @DEFAULT_SINK@ +10%", NULL };
@@ -80,7 +78,7 @@ static Key keys[] = {
 	{ 0,                            0xffc8,    spawn,          {.v = voldn } },
 	{ 0,                            0xffc9,    spawn,          {.v = volup } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = calc } },
-	{ MODKEY,                       XK_w,      spawn,          {.v = chromium } },
+	{ 0,                            0xffc1,    spawn,          {.v = chromium } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = vim } },
 	{ MODKEY,                       XK_o,      spawn,          {.v = vifm } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -103,8 +101,6 @@ static Key keys[] = {
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
