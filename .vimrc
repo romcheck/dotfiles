@@ -23,10 +23,11 @@ set titlestring=%F
 set autochdir
 set hidden
 
+let base16colorspace=256
+colorscheme base16-google-dark
+
 filetype plugin indent on
 syntax on
-
-colorscheme base16-google
 
 map <silent> <f3> :silent set hlsearch! hlsearch?<cr>
 map <silent> <f4> :set invnumber<cr>
@@ -47,3 +48,4 @@ augroup END
 let g:netrw_banner = 0
 
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+set titleold=
