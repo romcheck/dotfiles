@@ -411,5 +411,6 @@ nnoremap <f8> :delete<cr>
 " let $VIFM_SERVER_NAME = v:servername
 
 map q :quit<cr>
+map й :quit<cr>
 
 set title

@@ -29,9 +29,12 @@ colorscheme base16-google-dark
 filetype plugin indent on
 syntax on
 
-map <silent> <f3> :silent set hlsearch! hlsearch?<cr>
-map <silent> <f4> :set invnumber<cr>
+map <silent> § :silent set hlsearch! hlsearch?<cr>
+map <silent> ± :set invnumber<cr>
 map <silent> q :xa<cr>
+map <silent> > :silent set hlsearch! hlsearch?<cr>
+map <silent> < :set invnumber<cr>
+map <silent> й :xa<cr>
 
 function! ResCur()
   if line("'\"") <= line("$")
