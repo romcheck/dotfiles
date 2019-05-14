@@ -5,8 +5,8 @@ static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = {"monospace:size=12"};
-static const char dmenufont[]       = "monospace:size=12";
+static const char *fonts[]          = {"monospace:size=11"};
+static const char dmenufont[]       = "monospace:size=11";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -19,7 +19,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3" };
+static const char *tags[] = { "1", "2", "3", "4" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -37,8 +37,8 @@ static const int resizehints = 0;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[-]",      tile },    /* first entry is default */
 	{ "[-]",      monocle },
+	{ "[-]",      tile },
 };
 
 /* key definitions */
@@ -78,7 +78,7 @@ static Key keys[] = {
 	{ 0,                            0xffc8,    spawn,          {.v = voldn } },
 	{ 0,                            0xffc9,    spawn,          {.v = volup } },
 	{ MODKEY,                       XK_c,      spawn,          {.v = calc } },
-	{ 0,                            XK_F1,     spawn,          {.v = chromium } },
+	{ MODKEY,                       XK_w,      spawn,          {.v = chromium } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = vim } },
 	{ MODKEY,                       XK_o,      spawn,          {.v = vifm } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -101,6 +101,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
+	TAGKEYS(                        XK_4,                      3)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 
