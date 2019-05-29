@@ -114,8 +114,8 @@ set statusline="  Hint: %z%= %A %10u:%-7g %15s %20d  "
 
 " :mark mark /full/directory/path [filename]
 
-mark b ~/bin/
 mark h ~/
+mark d ~/Downloads
 
 " ------------------------------------------------------------------------------
 
@@ -414,3 +414,4 @@ map q :quit<cr>
 map й :quit<cr>
 
 set title
+only
