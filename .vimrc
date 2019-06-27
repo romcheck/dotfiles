@@ -17,8 +17,10 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set numberwidth=1
+
 set title
 set titlestring=%F
+set titleold=
 
 set autochdir
 set hidden
@@ -48,5 +50,4 @@ augroup END
 
 let g:netrw_banner = 0
 
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-set titleold=
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 "expandtab

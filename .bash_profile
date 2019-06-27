@@ -1,5 +1,4 @@
 export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-export CLICOLOR=1
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
@@ -16,4 +15,6 @@ HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=
 HISTFILESIZE=
 
-PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/sbin:$PATH"
+
+complete -C /usr/local/bin/mc mc
