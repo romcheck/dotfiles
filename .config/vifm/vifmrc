@@ -209,16 +209,16 @@ fileviewer *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
          \ ffprobe -pretty %c 2>&1
 
 " Web
-filetype *.html,*.htm
-       \ {Open in Safari}
-       \ open -a Safari.app,
-       \ {Open in Firefox}
-       \ open -a Firefox.app,
-       \ {Open in Chrome}
-       \ open -a Google\ Chrome.app,
-       \ {Open in vim}
-       \ vim,
-fileviewer *.html,*.htm w3m -dump -T text/html
+"filetype *.html,*.htm
+"       \ {Open in Safari}
+"       \ open -a Safari.app,
+"       \ {Open in Firefox}
+"       \ open -a Firefox.app,
+"       \ {Open in Chrome}
+"       \ open -a Google\ Chrome.app,
+"       \ {Open in vim}
+"       \ vim,
+"fileviewer *.html,*.htm w3m -dump -T text/html
 
 " Object
 filetype *.o nm %f | less
