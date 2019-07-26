@@ -18,7 +18,7 @@ HISTFILESIZE=
 
 PATH="/usr/local/Cellar/libpq/11.4/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/sbin:$PATH"
 
-#complete -C /usr/local/bin/mc mc
+complete -C /usr/local/bin/mc mc
 
 # hxr
 export TF_VAR_dotoken=$(envchain hxr printenv DIGITALOCEAN_ACCESS_TOKEN)
