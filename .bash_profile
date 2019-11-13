@@ -1,30 +1,35 @@
+# default locale
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
+# colorscheme
 [[ -r "$HOME/.config/base16-google-dark.sh" ]] && . "$HOME/.config/base16-google-dark.sh"
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
-[[ -r "/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh" ]] && . "/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh"
 
+# completions and prompt
+export BASH_COMPLETION_COMPAT_DIR=/usr/local/etc/bash_completion.d
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+[[ -r "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc" ]] && . "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
+[[ -r "/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh" ]] && . "/Library/Developer/CommandLineTools/usr/share/git-core/git-prompt.sh"
+[[ -r "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash" ]] && . "/Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash"
+complete -C /usr/local/bin/mc mc
+_pip_completion()
+{
+    COMPREPLY=( $( COMP_WORDS="${COMP_WORDS[*]}" \
+                   COMP_CWORD=$COMP_CWORD \
+                   PIP_AUTO_COMPLETE=1 $1 ) )
+}
+complete -o default -F _pip_completion pip3
 GIT_PS1_SHOWCOLORHINTS=true
+export GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWDIRTYSTATE=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
+GIT_PS1_SHOWSTASHSTATE=true
 PROMPT_COMMAND='__git_ps1 "\w" " \\\$ "'
 
+# unlimited history without dups
 HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=
 HISTFILESIZE=
 
-PATH="/usr/local/Cellar/libpq/11.4/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/sbin:$PATH"
-
-complete -C /usr/local/bin/mc mc
-
-# hxr
-export TF_VAR_dotoken=$(envchain hxr printenv DIGITALOCEAN_ACCESS_TOKEN)
-export TF_VAR_digitalocean_token=$(envchain hxr printenv DIGITALOCEAN_ACCESS_TOKEN)
-alias doctl="envchain hxr doctl"
-alias gandi="envchain hxr gandi"
-alias kubectl="envchain hxr kubectl"
-alias helm="envchain hxr helm"
-alias drone="envchain hxr drone"
+# search for local binaries first
+PATH="/usr/local/opt/libpq/bin/:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/sbin:$PATH"
