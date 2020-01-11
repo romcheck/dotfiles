@@ -312,9 +312,9 @@
 	<key>HideActivityIndicator</key>
 	<true/>
 	<key>HideFromDockAndAppSwitcher</key>
-	<true/>
+	<false/>
 	<key>HideMenuBarInFullscreen</key>
-	<true/>
+	<false/>
 	<key>HideScrollbar</key>
 	<true/>
 	<key>HideTab</key>
@@ -358,8 +358,6 @@
 		<string>0.000000, 0.000000, 224.000000, 258.000000, NO, NO</string>
 		<string>0.000000, 259.000000, 224.000000, 48.000000, NO, NO</string>
 	</array>
-	<key>NSStatusItem Preferred Position Item-0</key>
-	<real>321</real>
 	<key>NSTableView Columns v2 KeyBingingTable</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
@@ -392,6 +390,8 @@
 	<string>451 201 799 448 0 0 1440 877 </string>
 	<key>NSWindow Frame ProfilesPanel</key>
 	<string>289 366 735 382 0 0 1440 877 </string>
+	<key>NSWindow Frame SUStatusFrame</key>
+	<string>647 748 400 129 0 0 1440 877 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>410 363 620 392 0 0 1440 877 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
@@ -399,11 +399,11 @@
 	<key>NSWindow Frame SharedPreferences</key>
 	<string>227 373 796 486 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 509 570 368 0 0 1440 877 </string>
+	<string>0 0 1440 877 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>0 487 570 390 0 0 1440 877 </string>
+	<string>0 509 570 368 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>197 217 570 390 0 0 1440 877 </string>
+	<string>197 239 570 368 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
 	<string>218 24 710 560 0 0 1440 877 </string>
 	<key>NSWindow Frame iTerm Window 4</key>
@@ -713,8 +713,12 @@
 			<string>No</string>
 			<key>Description</key>
 			<string>Default</string>
+			<key>Disable Printing</key>
+			<true/>
+			<key>Disable Smcup Rmcup</key>
+			<true/>
 			<key>Disable Window Resizing</key>
-			<false/>
+			<true/>
 			<key>Flashing Bell</key>
 			<false/>
 			<key>Foreground Color</key>
@@ -1170,12 +1174,13 @@
 	<key>NoSyncAllAppVersions</key>
 	<array>
 		<string>3.3.6</string>
-		<string>3.3.4</string>
+		<string>3.3.2</string>
 		<string>3.3.1</string>
 		<string>3.3.3</string>
-		<string>3.3.0</string>
-		<string>3.3.2</string>
+		<string>3.3.7</string>
 		<string>3.2.9</string>
+		<string>3.3.0</string>
+		<string>3.3.4</string>
 	</array>
 	<key>NoSyncCommandHistoryHasEverBeenUsed</key>
 	<true/>
@@ -1200,7 +1205,7 @@
 	<key>NoSyncInstallationId</key>
 	<string>1E88FFBC-3660-45E7-BDD5-6E85D4B88E9B</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>30</integer>
+	<integer>49</integer>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -1521,6 +1526,14 @@
 				<key>isTerminal</key>
 				<true/>
 				<key>name</key>
+				<string>currentTab.iterm2.localhostName</string>
+				<key>nonterminalContext</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>isTerminal</key>
+				<true/>
+				<key>name</key>
 				<string>style</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
@@ -1748,6 +1761,14 @@
 				<key>isTerminal</key>
 				<true/>
 				<key>name</key>
+				<string>iterm2.localhostName</string>
+				<key>nonterminalContext</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>isTerminal</key>
+				<true/>
+				<key>name</key>
 				<string>tmuxWindowName</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
@@ -1926,16 +1947,15 @@
 	</array>
 	<key>NoSyncSearchHistory2</key>
 	<array>
-		<string>cored</string>
-		<string>romchek</string>
-		<string>trace</string>
-		<string>lrpc</string>
-		<string>completion</string>
-		<string>heapster</string>
-		<string>kube-pro</string>
-		<string>addons</string>
-		<string>backend</string>
-		<string>http</string>
+		<string>tiller</string>
+		<string>chceck</string>
+		<string>init</string>
+		<string>defa</string>
+		<string>python</string>
+		<string>backup</string>
+		<string>image</string>
+		<string>packages</string>
+		<string>smtp</string>
 	</array>
 	<key>NoSyncTimeOfFirstLaunchOfVersionWithTip</key>
 	<real>580918595.08161998</real>
@@ -1949,6 +1969,8 @@
 	<false/>
 	<key>OpenNoWindowsAtStartup</key>
 	<false/>
+	<key>OpenTmuxWindowsIn</key>
+	<integer>0</integer>
 	<key>OptionClickMovesCursor</key>
 	<false/>
 	<key>PMPrintingExpandedStateForPrint2</key>
@@ -2011,13 +2033,15 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2019-11-12T19:43:46Z</date>
+	<date>2020-01-08T23:55:51Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateRelaunchingMarker</key>
 	<false/>
-	<key>ShowFullScreenTabBar</key>
+	<key>SeparateWindowTitlePerTab</key>
 	<false/>
+	<key>ShowFullScreenTabBar</key>
+	<true/>
 	<key>ShowNewOutputIndicator</key>
 	<false/>
 	<key>ShowPaneTitles</key>
@@ -2050,6 +2074,8 @@
 	<dict/>
 	<key>UseLionStyleFullscreen</key>
 	<false/>
+	<key>UseTmuxStatusBar</key>
+	<false/>
 	<key>VisualIndicatorForEsc</key>
 	<false/>
 	<key>WindowNumber</key>
@@ -2061,7 +2087,7 @@
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>iTerm Version</key>
-	<string>3.3.6</string>
+	<string>3.3.7</string>
 	<key>metalMaximizeThroughput</key>
 	<false/>
 </dict>

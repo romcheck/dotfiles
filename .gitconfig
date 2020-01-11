@@ -1,3 +1,6 @@
 [user]
     email = romcheck@gmail.com
     name = romcheck
+[core]
+    abbrev = 7
+    excludesfile = ~/.gitignore
