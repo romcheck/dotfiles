@@ -10,6 +10,8 @@
 	<false/>
 	<key>AppleAntiAliasingThreshold</key>
 	<integer>1</integer>
+	<key>ApplePressAndHoldEnabled</key>
+	<false/>
 	<key>AppleScrollAnimationEnabled</key>
 	<integer>0</integer>
 	<key>AppleSmoothFixedFontsSizeThreshold</key>
@@ -312,7 +314,7 @@
 	<key>HideActivityIndicator</key>
 	<true/>
 	<key>HideFromDockAndAppSwitcher</key>
-	<false/>
+	<true/>
 	<key>HideMenuBarInFullscreen</key>
 	<false/>
 	<key>HideScrollbar</key>
@@ -324,13 +326,13 @@
 	<key>Hotkey</key>
 	<false/>
 	<key>HotkeyChar</key>
-	<integer>167</integer>
+	<integer>96</integer>
 	<key>HotkeyCode</key>
-	<integer>10</integer>
+	<integer>50</integer>
 	<key>HotkeyMigratedFromSingleToMulti</key>
 	<true/>
 	<key>HotkeyModifiers</key>
-	<integer>256</integer>
+	<integer>0</integer>
 	<key>IRMemory</key>
 	<integer>4</integer>
 	<key>JobName</key>
@@ -339,12 +341,8 @@
 	<true/>
 	<key>NSNavLastRootDirectory</key>
 	<string>~/dotfiles</string>
-	<key>NSNavLastUserSetHideExtensionButtonState</key>
-	<true/>
 	<key>NSNavPanelExpandedSizeForOpenMode</key>
 	<string>{799, 448}</string>
-	<key>NSNavPanelExpandedSizeForSaveMode</key>
-	<string>{712, 448}</string>
 	<key>NSQuotedKeystrokeBinding</key>
 	<string></string>
 	<key>NSRepeatCountBinding</key>
@@ -386,34 +384,18 @@
 		<key>TB Is Shown</key>
 		<integer>1</integer>
 	</dict>
+	<key>NSWindow Frame NSColorPanel</key>
+	<string>0 163 224 275 0 0 1536 937 </string>
 	<key>NSWindow Frame NSNavPanelAutosaveName</key>
-	<string>451 201 799 448 0 0 1440 877 </string>
-	<key>NSWindow Frame ProfilesPanel</key>
-	<string>289 366 735 382 0 0 1440 877 </string>
-	<key>NSWindow Frame SUStatusFrame</key>
-	<string>647 748 400 129 0 0 1440 877 </string>
+	<string>368 383 799 448 0 0 1536 937 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>410 363 620 392 0 0 1440 877 </string>
-	<key>NSWindow Frame SessionsPreferences</key>
-	<string>269 126 606 469 0 0 1440 877 </string>
-	<key>NSWindow Frame SharedPreferences</key>
-	<string>227 373 796 486 0 0 1440 877 </string>
+	<string>458 408 620 392 0 0 1536 937 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1440 877 0 0 1440 877 </string>
+	<string>0 547 570 390 0 0 1536 937 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>0 509 570 368 0 0 1440 877 </string>
+	<string>0 0 1536 937 0 0 1536 937 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
-	<string>197 239 570 368 0 0 1440 877 </string>
-	<key>NSWindow Frame iTerm Window 3</key>
-	<string>218 24 710 560 0 0 1440 877 </string>
-	<key>NSWindow Frame iTerm Window 4</key>
-	<string>0 0 1440 877 0 0 1440 877 </string>
-	<key>NSWindow Frame iTerm Window 5</key>
-	<string>176 70 570 390 0 0 1440 877 </string>
-	<key>NSWindow Frame iTerm Window 8</key>
-	<string>497 -138 822 849 0 0 1440 877 </string>
-	<key>NSWindow Frame iTerm Window 9</key>
-	<string>176 70 570 475 0 0 1440 877 </string>
+	<string>211 38 570 390 0 0 1536 937 </string>
 	<key>NeverWarnAboutShortLivedSessions_1690C6F1-AF63-4FC4-A98A-750F8CF52AE6</key>
 	<true/>
 	<key>NeverWarnAboutShortLivedSessions_1690C6F1-AF63-4FC4-A98A-750F8CF52AE6_selection</key>
@@ -719,6 +701,8 @@
 			<true/>
 			<key>Disable Window Resizing</key>
 			<true/>
+			<key>Draw Powerline Glyphs</key>
+			<true/>
 			<key>Flashing Bell</key>
 			<false/>
 			<key>Foreground Color</key>
@@ -743,11 +727,11 @@
 			<key>HotKey Alternate Shortcuts</key>
 			<array/>
 			<key>HotKey Characters</key>
-			<string>§</string>
+			<string>`</string>
 			<key>HotKey Characters Ignoring Modifiers</key>
-			<string>§</string>
+			<string>`</string>
 			<key>HotKey Key Code</key>
-			<integer>10</integer>
+			<integer>50</integer>
 			<key>HotKey Modifier Activation</key>
 			<integer>0</integer>
 			<key>HotKey Modifier Flags</key>
@@ -1173,45 +1157,29 @@
 	</array>
 	<key>NoSyncAllAppVersions</key>
 	<array>
-		<string>3.3.6</string>
-		<string>3.3.2</string>
-		<string>3.3.1</string>
-		<string>3.3.3</string>
 		<string>3.3.7</string>
-		<string>3.2.9</string>
-		<string>3.3.0</string>
-		<string>3.3.4</string>
+		<string>3.3.8</string>
+		<string>3.3.9</string>
 	</array>
 	<key>NoSyncCommandHistoryHasEverBeenUsed</key>
 	<true/>
-	<key>NoSyncFrame_SessionsPreferences</key>
-	<dict>
-		<key>screenFrame</key>
-		<string>{{0, 0}, {1440, 900}}</string>
-		<key>topLeft</key>
-		<string>{417, 787}</string>
-	</dict>
 	<key>NoSyncFrame_SharedPreferences</key>
 	<dict>
 		<key>screenFrame</key>
-		<string>{{0, 0}, {1440, 900}}</string>
+		<string>{{0, 0}, {1536, 960}}</string>
 		<key>topLeft</key>
-		<string>{391, 727}</string>
+		<string>{446, 776}</string>
 	</dict>
-	<key>NoSyncHaveUsedCopyMode</key>
-	<true/>
-	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
-	<true/>
 	<key>NoSyncInstallationId</key>
-	<string>1E88FFBC-3660-45E7-BDD5-6E85D4B88E9B</string>
+	<string>BB00B17D-010F-45ED-BBBA-FA51681873D6</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>49</integer>
+	<integer>35</integer>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
 	<integer>0</integer>
 	<key>NoSyncNextAnnoyanceTime</key>
-	<real>586543692.82660306</real>
+	<real>603363960.70412302</real>
 	<key>NoSyncOnboardingWindowHasBeenShown</key>
 	<true/>
 	<key>NoSyncPermissionToShowTip</key>
@@ -1638,6 +1606,14 @@
 				<key>isTerminal</key>
 				<true/>
 				<key>name</key>
+				<string>number</string>
+				<key>nonterminalContext</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>isTerminal</key>
+				<true/>
+				<key>name</key>
 				<string>currentTab.currentSession.path</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
@@ -1654,23 +1630,7 @@
 				<key>isTerminal</key>
 				<true/>
 				<key>name</key>
-				<string>number</string>
-				<key>nonterminalContext</key>
-				<integer>0</integer>
-			</dict>
-			<dict>
-				<key>isTerminal</key>
-				<true/>
-				<key>name</key>
 				<string>currentTab.currentSession.hostname</string>
-				<key>nonterminalContext</key>
-				<integer>0</integer>
-			</dict>
-			<dict>
-				<key>isTerminal</key>
-				<true/>
-				<key>name</key>
-				<string>currentTab.titleOverrideFormat</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
 			</dict>
@@ -1841,7 +1801,7 @@
 				<key>isTerminal</key>
 				<true/>
 				<key>name</key>
-				<string>currentSession.path</string>
+				<string>currentSession.termid</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
 			</dict>
@@ -1866,6 +1826,14 @@
 				<true/>
 				<key>name</key>
 				<string>currentSession.hostname</string>
+				<key>nonterminalContext</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>isTerminal</key>
+				<true/>
+				<key>name</key>
+				<string>currentSession.path</string>
 				<key>nonterminalContext</key>
 				<integer>0</integer>
 			</dict>
@@ -1930,37 +1898,8 @@
 			</dict>
 		</array>
 	</dict>
-	<key>NoSyncSaveDocumentAsPathSet_saveDocumentAs:</key>
-	<true/>
-	<key>NoSyncSearchHistory</key>
-	<array>
-		<string>cheaps</string>
-		<string>regio</string>
-		<string>base-url</string>
-		<string>users</string>
-		<string>exit</string>
-		<string>exit on</string>
-		<string>file</string>
-		<string>wait</string>
-		<string>tille</string>
-		<string>elas</string>
-	</array>
-	<key>NoSyncSearchHistory2</key>
-	<array>
-		<string>tiller</string>
-		<string>chceck</string>
-		<string>init</string>
-		<string>defa</string>
-		<string>python</string>
-		<string>backup</string>
-		<string>image</string>
-		<string>packages</string>
-		<string>smtp</string>
-	</array>
-	<key>NoSyncTimeOfFirstLaunchOfVersionWithTip</key>
-	<real>580918595.08161998</real>
-	<key>NoSyncTipsDisabled</key>
-	<true/>
+	<key>NoSyncTipOfTheDayEligibilityBeganTime</key>
+	<real>603022505.58048403</real>
 	<key>OnlyWhenMoreTabs</key>
 	<false/>
 	<key>OpenArrangementAtStartup</key>
@@ -1968,7 +1907,7 @@
 	<key>OpenBookmark</key>
 	<false/>
 	<key>OpenNoWindowsAtStartup</key>
-	<false/>
+	<true/>
 	<key>OpenTmuxWindowsIn</key>
 	<integer>0</integer>
 	<key>OptionClickMovesCursor</key>
@@ -2029,19 +1968,21 @@
 	<key>SUFeedAlternateAppNameKey</key>
 	<string>iTerm</string>
 	<key>SUFeedURL</key>
-	<string>https://iterm2.com/appcasts/final_new.xml?shard=61</string>
+	<string>https://iterm2.com/appcasts/final_new.xml?shard=91</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2020-01-08T23:55:51Z</date>
+	<date>2020-04-22T10:27:37Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
+	<key>SUUpdateGroupIdentifier</key>
+	<integer>2551739105</integer>
 	<key>SUUpdateRelaunchingMarker</key>
 	<false/>
 	<key>SeparateWindowTitlePerTab</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<true/>
+	<false/>
 	<key>ShowNewOutputIndicator</key>
 	<false/>
 	<key>ShowPaneTitles</key>
@@ -2087,7 +2028,7 @@
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>iTerm Version</key>
-	<string>3.3.7</string>
+	<string>3.3.9</string>
 	<key>metalMaximizeThroughput</key>
 	<false/>
 </dict>
