@@ -1,15 +1,17 @@
+---
 kind: pipeline
-name: default
+name: pipeline
+
+platform:
+  os: linux
+  arch: amd64
 
 steps:
-- name: frontend
-  image: node
+- name: step
+  image: alpine
   commands:
-  - npm install
-  - npm test
+  - echo hello!
 
-- name: backend
-  image: golang
-  commands:
-  - go build
-  - go test
+trigger:
+  branch:
+  - master
