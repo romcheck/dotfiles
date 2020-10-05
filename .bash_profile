@@ -34,10 +34,14 @@ shopt -s histappend
 PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 # search for local binaries first
-PATH="/usr/local/opt/helm@2/bin:/usr/local/opt/libpq/bin/:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/sbin:$PATH"
+PATH="/usr/local/opt/helm@3/bin:/usr/local/opt/libpq/bin/:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/sbin:$PATH"
 
 # The next line updates PATH for Yandex Cloud CLI.
 if [ -f '/Users/romcheck/yandex-cloud/path.bash.inc' ]; then source '/Users/romcheck/yandex-cloud/path.bash.inc'; fi
 
 # The next line enables shell command completion for yc.
 if [ -f '/Users/romcheck/yandex-cloud/completion.bash.inc' ]; then source '/Users/romcheck/yandex-cloud/completion.bash.inc'; fi
+
+# Kubectl autocompletion
+if [ -f "$HOME/.kube/completion" ]; then source "$HOME/.kube/completion"; fi
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"

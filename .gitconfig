@@ -1,6 +1,11 @@
 [user]
     email = romcheck@gmail.com
     name = romcheck
+    signingkey = 8677B3250FABEC58
 [core]
-    abbrev = 7
     excludesfile = ~/.gitignore
+[commit]
+    gpgsign = true
+
+[includeIf "gitdir:~/mariadb/"]
+    path = ~/mariadb/.gitconfig

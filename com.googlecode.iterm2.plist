@@ -389,13 +389,17 @@
 	<key>NSWindow Frame NSNavPanelAutosaveName</key>
 	<string>368 383 799 448 0 0 1536 937 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>458 408 620 392 0 0 1536 937 </string>
+	<string>362 318 620 392 0 0 1344 817 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 547 570 390 0 0 1536 937 </string>
+	<string>0 0 1344 817 0 0 1344 817 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>0 0 1536 937 0 0 1536 937 </string>
+	<string>0 427 570 390 0 0 1344 817 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>211 38 570 390 0 0 1536 937 </string>
+	<key>NeverWarnAboutMeta</key>
+	<true/>
+	<key>NeverWarnAboutMeta_selection</key>
+	<integer>0</integer>
 	<key>NeverWarnAboutShortLivedSessions_1690C6F1-AF63-4FC4-A98A-750F8CF52AE6</key>
 	<true/>
 	<key>NeverWarnAboutShortLivedSessions_1690C6F1-AF63-4FC4-A98A-750F8CF52AE6_selection</key>
@@ -599,6 +603,8 @@
 				<key>Red Component</key>
 				<real>0.80000000000000004</real>
 			</dict>
+			<key>Application Keypad Allowed</key>
+			<false/>
 			<key>BM Growl</key>
 			<false/>
 			<key>Background Color</key>
@@ -1132,18 +1138,22 @@
 			<key>Terminal Type</key>
 			<string>xterm-256color</string>
 			<key>Title Components</key>
-			<integer>512</integer>
+			<integer>2</integer>
 			<key>Transparency</key>
 			<real>0.0</real>
+			<key>Unicode Version</key>
+			<integer>9</integer>
 			<key>Unlimited Scrollback</key>
 			<false/>
 			<key>Use Bold Font</key>
-			<true/>
+			<false/>
 			<key>Use Bright Bold</key>
 			<true/>
 			<key>Use Italic Font</key>
 			<false/>
 			<key>Use Non-ASCII Font</key>
+			<false/>
+			<key>Use libtickit protocol</key>
 			<false/>
 			<key>Vertical Spacing</key>
 			<real>1</real>
@@ -1157,23 +1167,34 @@
 	</array>
 	<key>NoSyncAllAppVersions</key>
 	<array>
-		<string>3.3.7</string>
-		<string>3.3.8</string>
 		<string>3.3.9</string>
+		<string>3.3.8</string>
+		<string>3.3.11</string>
+		<string>3.3.7</string>
+		<string>3.3.12</string>
 	</array>
 	<key>NoSyncCommandHistoryHasEverBeenUsed</key>
 	<true/>
-	<key>NoSyncFrame_SharedPreferences</key>
+	<key>NoSyncFrame_SessionsPreferences</key>
 	<dict>
 		<key>screenFrame</key>
 		<string>{{0, 0}, {1536, 960}}</string>
 		<key>topLeft</key>
-		<string>{446, 776}</string>
+		<string>{465, 839}</string>
 	</dict>
+	<key>NoSyncFrame_SharedPreferences</key>
+	<dict>
+		<key>screenFrame</key>
+		<string>{{0, 0}, {1344, 840}}</string>
+		<key>topLeft</key>
+		<string>{311, 683}</string>
+	</dict>
+	<key>NoSyncHaveUsedCopyMode</key>
+	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>BB00B17D-010F-45ED-BBBA-FA51681873D6</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>35</integer>
+	<integer>60</integer>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -1972,17 +1993,17 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2020-04-22T10:27:37Z</date>
+	<date>2020-07-16T05:59:56Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateGroupIdentifier</key>
-	<integer>2551739105</integer>
+	<integer>4176365549</integer>
 	<key>SUUpdateRelaunchingMarker</key>
 	<false/>
 	<key>SeparateWindowTitlePerTab</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<false/>
+	<true/>
 	<key>ShowNewOutputIndicator</key>
 	<false/>
 	<key>ShowPaneTitles</key>
@@ -2028,7 +2049,7 @@
 	<key>findMode_iTerm</key>
 	<integer>0</integer>
 	<key>iTerm Version</key>
-	<string>3.3.9</string>
+	<string>3.3.12</string>
 	<key>metalMaximizeThroughput</key>
 	<false/>
 </dict>
