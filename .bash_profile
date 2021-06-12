@@ -12,6 +12,7 @@ export BASH_COMPLETION_COMPAT_DIR=/usr/local/etc/bash_completion.d
 [ -r "/usr/local/Caskroom/yandex-cloud-cli/latest/yandex-cloud-cli/completion.bash.inc" ] && . "/usr/local/Caskroom/yandex-cloud-cli/latest/yandex-cloud-cli/completion.bash.inc"
 [ -r "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc" ] && . "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
 [ -r "$HOME/.kube/completion" ] && . "$HOME/.kube/completion"
+[ -r "/usr/local/bin/mc" ] && complete -C "/usr/local/bin/mc" mc
 #_pip_completion()
 #{
 #    COMPREPLY=( $( COMP_WORDS="${COMP_WORDS[*]}" \
@@ -19,8 +20,6 @@ export BASH_COMPLETION_COMPAT_DIR=/usr/local/etc/bash_completion.d
 #                   PIP_AUTO_COMPLETE=1 $1 ) )
 #}
 #complete -o default -F _pip_completion pip3
-# minio client
-#complete -C /usr/local/bin/mc mc
 
 # history
 shopt -s histappend

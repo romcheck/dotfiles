@@ -430,6 +430,7 @@ nnoremap <c-u> <c-w>x
 "
 " let $VIFM_SERVER_NAME = v:servername
 
+set trashdir=~/.Trash
 map q :quit<cr>
 map й :quit<cr>
 only
