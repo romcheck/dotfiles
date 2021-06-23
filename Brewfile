@@ -8,31 +8,36 @@ tap "homebrew/core"
 tap "homebrew/services"
 
 brew "ansible"
-brew "awscli"
 brew "bash"
 brew "bash-completion@2"
 brew "starship"
 brew "docker-completion"
 brew "docker-compose-completion"
-brew "doctl"
 
+brew "doctl"
 brew "gandi.cli"
-brew "git-crypt"
+
+# legacy
+#brew "terraform-provider-libvirt"
+#brew "dvdrtools"
+
 brew "tfenv"
 brew "terraform-inventory"
-brew "terraform-provider-libvirt"
-brew "dvdrtools"
 brew "libpq"
 brew "helm"
-brew "helm@2"
 brew "iproute2mac"
 brew "vifm"
+
 brew "envchain"
 brew "gnupg"
 brew "pinentry-mac"
 brew "sops"
+
 brew "pwgen"
 brew "the_silver_searcher"
+brew "jose"
+brew "jq"
+
 brew "node"
 brew "pulumi"
 brew "jsonnet"
@@ -40,13 +45,6 @@ brew "k9s"
 
 tap "minio/stable"
 brew "minio/stable/mc"
-
-tap "instantclienttap/instantclient"
-brew "instantclient-sqlplus"
-brew "instantclient-basic"
-
-brew "jose"
-brew "jq"
 
 cask "iterm2"
 cask "docker-edge"

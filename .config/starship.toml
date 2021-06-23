@@ -6,6 +6,10 @@ format = """\
   $git_state\
   $git_status\
   $cmd_duration\
+  $kubernetes\
+  $terraform\
   $battery\
   $character\
   """
+[kubernetes]
+disabled = false
