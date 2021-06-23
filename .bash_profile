@@ -30,7 +30,7 @@ export HISTIGNORE=ls:ps:cat:history:vifm
 PROMPT_COMMAND="history -a; history -n"
 
 # path
-PATH="/usr/local/opt/helm@3/bin:/usr/local/opt/libpq/bin/:/usr/local/sbin:$PATH"
+PATH="/usr/local/opt/libpq/bin/:/usr/local/sbin:$PATH:~/dotfiles/bin"
 
 # alias
 alias copy="tr -d '\n' | pbcopy"
