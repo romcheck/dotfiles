@@ -1,0 +1,12 @@
+[submodule ".vim/pack/plugins/start/vim-jsonnet"]
+	path = .vim/pack/plugins/start/vim-jsonnet
+	url = https://github.com/google/vim-jsonnet
+[submodule ".vim/pack/plugins/start/typescript-vim"]
+	path = .vim/pack/plugins/start/typescript-vim
+	url = https://github.com/leafgarland/typescript-vim
+[submodule ".vim/pack/plugins/start/vim-prettier"]
+	path = .vim/pack/plugins/start/vim-prettier
+	url = https://github.com/prettier/vim-prettier
+[submodule ".vim/pack/plugins/start/vim-terraform"]
+	path = .vim/pack/plugins/start/vim-terraform
+	url = https://github.com/hashivim/vim-terraform.git
