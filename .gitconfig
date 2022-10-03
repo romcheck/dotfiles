@@ -1,0 +1,23 @@
+[user]
+    email = romcheck@gmail.com
+    name = romcheck
+    signingkey = 8677B3250FABEC58
+
+[core]
+    excludesfile = ~/.gitignore
+    abbrev = 8
+
+[commit]
+    gpgsign = true
+
+[push]
+    default = current
+
+[pull]
+    ff = only
+
+[includeIf "gitdir:~/mariadb/"]
+    path = ~/mariadb/.gitconfig
+
+[includeIf "gitdir:~/zit/"]
+    path = ~/zit/.gitconfig

@@ -1,0 +1,13 @@
+add_newline = false
+format = """\
+  $directory\
+  $git_branch\
+  $git_commit\
+  $git_state\
+  $git_status\
+  $cmd_duration\
+  $kubernetes\
+  $terraform\
+  $pulumi\
+  $character\
+  """

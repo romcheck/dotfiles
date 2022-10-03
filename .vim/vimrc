@@ -1,0 +1,58 @@
+set nocompatible
+
+set noswapfile
+set nobackup
+set undofile
+set undodir=~/.vim/undo
+set viminfo+=n~/.vim/viminfo
+
+set incsearch
+set ignorecase
+set smartcase
+
+set listchars=tab:>.,trail:.,nbsp:.
+set list
+
+set scrolloff=4
+set numberwidth=3
+set tabstop=2
+set expandtab
+
+set autochdir
+set hidden
+
+set cursorcolumn
+
+let base16colorspace=256
+colorscheme base16-google-dark
+
+map <silent> - :silent set hlsearch! hlsearch?<cr>
+map <silent> <tab> :set invnumber<cr>
+map <silent> q :xa<cr>
+map <silent> й :xa<cr>
+
+function! ResCur()
+  if line("'\"") <= line("$")
+    normal! g`"
+    return 1
+  endif
+endfunction
+
+augroup resCur
+  autocmd!
+  autocmd BufWinEnter * call ResCur()
+augroup END
+
+let g:netrw_banner = 0
+let g:netrw_dirhistmax = 0
+
+autocmd FileType yaml,typescript setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
+filetype plugin indent on
+syntax on
+
+set mouse=c
+
+set laststatus=2
+set statusline+=%F\ %=%{&filetype}\ %l:%c\ %p%%\ 
+
+set mmp=10000
