@@ -5,9 +5,10 @@ format = """\
   $git_commit\
   $git_state\
   $git_status\
-  $cmd_duration\
-  $kubernetes\
   $terraform\
   $pulumi\
   $character\
   """
+
+[pulumi]
+symbol = ""

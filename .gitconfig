@@ -16,8 +16,5 @@
 [pull]
     ff = only
 
-[includeIf "gitdir:~/mariadb/"]
-    path = ~/mariadb/.gitconfig
-
-[includeIf "gitdir:~/zit/"]
-    path = ~/zit/.gitconfig
+[include]
+    path = ~/Documents/.gitconfig
