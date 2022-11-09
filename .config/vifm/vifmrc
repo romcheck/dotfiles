@@ -1,15 +1,19 @@
 set trashdir=~/.Trash
 set incsearch
 set ignorecase
-map s :shell<cr>
-map q :quit<cr>
-map й :quit<cr>
+
 only
 mark h ~/
 mark z ~/.config/vifm/ vifmrc
 mark d ~/Downloads
 mark D ~/Documents
 colorscheme calm
-filetype {*.pdf},<application/pdf>
-       \ {Open in Preview}
+filetype {*.pdf},<application/pdf>,{*.jpg,*.jpeg,*.png},<image/*>
        \ open -a Preview.app
+nnoremap I cw<c-a>
+nnoremap cc cw<c-u>
+nnoremap A cw
+map s :shell<cr>
+map ы :shell<cr>
+map q :quit<cr>
+map й :quit<cr>

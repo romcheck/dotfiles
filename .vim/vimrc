@@ -50,8 +50,6 @@ autocmd FileType yaml,typescript setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=
 filetype plugin indent on
 syntax on
 
-set mouse=c
-
 set laststatus=2
 set statusline+=%F\ %=%{&filetype}\ %l:%c\ %p%%\ 
 
