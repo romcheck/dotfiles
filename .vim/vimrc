@@ -1,35 +1,54 @@
 set nocompatible
+filetype off
+set noerrorbells visualbell t_vb=
 
-set noswapfile
 set nobackup
+set noswapfile
+set nowritebackup
+
 set undofile
 set undodir=~/.vim/undo
 set viminfo+=n~/.vim/viminfo
 
-set incsearch
-set ignorecase
-set smartcase
+set ignorecase " Ignore case when searching
+set smartcase  " When searching try to be smart about cases
+set incsearch  " Jumping search
 
 set listchars=tab:>.,trail:.,nbsp:.
 set list
 
-set scrolloff=4
 set numberwidth=3
+
+set shiftwidth=2
 set tabstop=2
+set softtabstop=2 " Number of spaces a tab counts when editing
 set expandtab
 
-set autochdir
 set hidden
 
 set cursorcolumn
 
+set updatetime=300
+
 let base16colorspace=256
 colorscheme base16-google-dark
 
+let mapleader = " "
+
+map j gj
+map k gk
 map <silent> - :silent set hlsearch! hlsearch?<cr>
 map <silent> <tab> :set invnumber<cr>
 map <silent> q :xa<cr>
-map <silent> й :xa<cr>
+map <silent> й q<cr>
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <leader>c  <Plug>(coc-codeaction)
+nmap <leader>qf <Plug>(coc-fix-current)
+nmap <leader>f :CocCommand prettier.formatFile<CR>
+nmap z za
 
 function! ResCur()
   if line("'\"") <= line("$")
@@ -43,14 +62,30 @@ augroup resCur
   autocmd BufWinEnter * call ResCur()
 augroup END
 
-let g:netrw_banner = 0
-let g:netrw_dirhistmax = 0
-
-autocmd FileType yaml,typescript setlocal ts=2 sts=2 sw=2 expandtab indentkeys-=0# indentkeys-=<:>
+autocmd BufWritePre * :%s/\s\+$//e
 filetype plugin indent on
 syntax on
 
-set laststatus=2
-set statusline+=%F\ %=%{&filetype}\ %l:%c\ %p%%\ 
+" Indentation
+set autoindent
+set cindent
+set smartindent
 
-set mmp=10000
+set foldmethod=syntax
+set foldlevel=99
+
+set laststatus=2
+
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-prettier', 'coc-yaml', 'coc-git']
+
+let g:netrw_banner = 0
+let g:netrw_dirhistmax = 0
+
+" Set default encoding to utf-8
+set encoding=utf-8
+set termencoding=utf-8
+
+set clipboard=unnamed
+set mouse=a
+
+set backspace=indent,eol,start

@@ -4,9 +4,19 @@
 [submodule ".vim/pack/plugins/start/typescript-vim"]
 	path = .vim/pack/plugins/start/typescript-vim
 	url = https://github.com/leafgarland/typescript-vim
-[submodule ".vim/pack/plugins/start/vim-prettier"]
-	path = .vim/pack/plugins/start/vim-prettier
-	url = https://github.com/prettier/vim-prettier
 [submodule ".vim/pack/plugins/start/vim-terraform"]
 	path = .vim/pack/plugins/start/vim-terraform
 	url = https://github.com/hashivim/vim-terraform.git
+[submodule ".vim/pack/plugins/start/coc.nvim"]
+	path = .vim/pack/plugins/start/coc.nvim
+	url = https://github.com/neoclide/coc.nvim.git
+	branch = release
+[submodule ".vim/pack/plugins/start/vim-airline"]
+	path = .vim/pack/plugins/start/vim-airline
+	url = https://github.com/vim-airline/vim-airline
+[submodule ".vim/pack/plugins/start/vim-airline-themes"]
+	path = .vim/pack/plugins/start/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes
+[submodule ".vim/pack/plugins/start/figutive"]
+	path = .vim/pack/plugins/start/figutive
+	url = https://tpope.io/vim/fugitive.git
