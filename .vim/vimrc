@@ -51,6 +51,8 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <leader>c  <Plug>(coc-codeaction)
 nmap <leader>qf <Plug>(coc-fix-current)
 nmap <leader>f :CocCommand prettier.formatFile<CR>
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 nmap z za
 
 function! ResCur()
