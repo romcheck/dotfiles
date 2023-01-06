@@ -25,6 +25,9 @@ set softtabstop=2 " Number of spaces a tab counts when editing
 set expandtab
 
 set hidden
+set ttyfast
+set lazyredraw
+set updatetime=300
 
 set cursorcolumn
 
