@@ -20,9 +20,6 @@
 [submodule ".vim/pack/plugins/start/figutive"]
 	path = .vim/pack/plugins/start/figutive
 	url = https://tpope.io/vim/fugitive.git
-[submodule ".vim/pack/plugins/start/endwise"]
-	path = .vim/pack/plugins/start/endwise
-	url = https://tpope.io/vim/endwise.git
 [submodule ".vim/pack/plugins/start/vim-gitgutter"]
 	path = .vim/pack/plugins/start/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter

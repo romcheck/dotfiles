@@ -30,13 +30,12 @@ set lazyredraw
 set updatetime=300
 
 set cursorcolumn
-
-set updatetime=300
+set scrolloff=2
 
 let base16colorspace=256
 colorscheme base16-google-dark
 
-let mapleader = " "
+let mapleader=" "
 
 map j gj
 map k gk
@@ -82,10 +81,10 @@ set foldlevel=99
 
 set laststatus=2
 
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-prettier', 'coc-yaml', 'coc-git']
+let g:coc_global_extensions=['coc-tsserver', 'coc-json', 'coc-prettier', 'coc-yaml', 'coc-git']
 
-let g:netrw_banner = 0
-let g:netrw_dirhistmax = 0
+let g:netrw_banner=0
+let g:netrw_dirhistmax=0
 
 " Set default encoding to utf-8
 set encoding=utf-8
