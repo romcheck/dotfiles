@@ -1,3 +1,4 @@
+let mapleader=" "
 set nocompatible
 filetype off
 set noerrorbells visualbell t_vb=
@@ -34,26 +35,6 @@ set scrolloff=2
 
 let base16colorspace=256
 colorscheme base16-google-dark
-
-let mapleader=" "
-
-map j gj
-map k gk
-map <silent> - :silent set hlsearch! hlsearch?<cr>
-map <silent> <tab> :set invnumber<cr>
-map <silent> q :xa<cr>
-map <silent> й q<cr>
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <leader>c  <Plug>(coc-codeaction)
-nmap <leader>qf <Plug>(coc-fix-current)
-nmap <leader>f :CocCommand prettier.formatFile<CR>
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-nmap <leader>rn <Plug>(coc-rename)
-nmap z za
 
 function! ResCur()
   if line("'\"") <= line("$")
@@ -94,3 +75,52 @@ set clipboard=unnamed
 set mouse=a
 
 set backspace=indent,eol,start
+
+" Map fzf search to CTRL P
+nnoremap <c-p> :GFiles<Cr>
+" Map fzf + ag search to CTRL P
+nnoremap <c-g> :Rg <Cr>
+
+set signcolumn=yes
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting
+nmap <leader>f :CocCommand prettier.formatFile<CR>
+
+" Add `:OR` command for organize imports of the current buffer
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+map j gj
+map k gk
+map <silent> - :silent set hlsearch! hlsearch?<cr>
+map <silent> <tab> :set invnumber<cr>
+nmap z za
+map <silent> q :xa<cr>
+map <silent> й q<cr>
