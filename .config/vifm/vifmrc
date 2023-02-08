@@ -1,6 +1,7 @@
 set trashdir=~/.Trash
 set incsearch
 set ignorecase
+set vifminfo+=savedirs
 
 only
 mark h ~/

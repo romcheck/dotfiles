@@ -71,8 +71,8 @@ let g:netrw_dirhistmax=0
 set encoding=utf-8
 set termencoding=utf-8
 
-set clipboard=unnamed
-set mouse=a
+"set clipboard=unnamed
+"set mouse=r
 
 set backspace=indent,eol,start
 
@@ -112,7 +112,7 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting
-nmap <leader>f :CocCommand prettier.formatFile<CR>
+" nmap <leader>f :CocCommand prettier.formatFile<CR>
 
 " Add `:OR` command for organize imports of the current buffer
 command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
@@ -124,3 +124,8 @@ map <silent> <tab> :set invnumber<cr>
 nmap z za
 map <silent> q :xa<cr>
 map <silent> й q<cr>
+
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+set maxmempattern=100000
+command! -nargs=0 Prettier :CocCommand prettier.formatFile

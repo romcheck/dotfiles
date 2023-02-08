@@ -8,7 +8,6 @@ PATH="$(brew --prefix)/opt/libpq/bin:${HOME}/Documents/bin:$PATH"
 alias copy="tr -d '\n' | pbcopy"
 #alias cat=bat
 alias ag=rg
-alias find=fd
 
 # private aliases
 [ -r "$HOME/Documents/.zsh_private_aliases" ] && . "$HOME/Documents/.zsh_private_aliases"
@@ -33,5 +32,9 @@ eval "$(starship init zsh)"
 
 # any region for S3 by default
 export AWS_REGION=eu-central-1
+#export PULUMI_K8S_SUPPRESS_HELM_HOOK_WARNINGS=true
+#export PULUMI_K8S_SUPPRESS_DEPRECATION_WARNINGS=true
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+eval "$(nodenv init -)"
