@@ -1,11 +1,22 @@
 [user]
     email = romcheck@gmail.com
     name = romcheck
-    signingkey = 8677B3250FABEC58
+    signingkey = ~/Documents/.id_rsa.pub
 
 [core]
     excludesfile = ~/.gitignore
     abbrev = 8
+    pager = cat
+    symlinks = true
+
+[pager]
+   delta = delta
+
+[alias]
+   delta = diff
+
+[delta]
+  max-line-length = 0
 
 [commit]
     gpgsign = true
@@ -15,6 +26,9 @@
 
 [pull]
     ff = only
+
+[gpg]
+    format = ssh
 
 [include]
     path = ~/Documents/.gitconfig

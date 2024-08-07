@@ -1,0 +1,33 @@
+k9s:
+  ui:
+    skin: one-dark
+    headless: true
+    logoless: true
+    crumbsless: true
+    defaultsToFullScreen: true
+  skipLatestRevCheck: true
+  disablePodCounting: true
+  shellPod:
+    image: alpine
+    namespace: default
+    limits:
+      cpu: 100m
+      memory: 100Mi
+  imageScans:
+    enable: false
+    exclusions:
+      namespaces: []
+      labels: {}
+  logger:
+    tail: 100
+    buffer: 5000
+    sinceSeconds: -1
+    textWrap: false
+    showTime: false
+  thresholds:
+    cpu:
+      critical: 90
+      warn: 80
+    memory:
+      critical: 90
+      warn: 80

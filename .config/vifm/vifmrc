@@ -1,18 +1,21 @@
+set vicmd=hx
 set trashdir=~/.Trash
 set incsearch
 set ignorecase
 set vifminfo+=savedirs
+set wildmenu
 
 only
 mark h ~/
 mark z ~/.config/vifm/ vifmrc
 mark d ~/Downloads
 mark D ~/Documents
-colorscheme calm
+colorscheme onedark
 
 filetype {*.pdf},<application/pdf>,{*.jpg,*.jpeg,*.png},<image/*> open -a Preview.app
 filetype {*.doc,*.docx},<application/msword> open -a Pages.app
 filetype {*.xls,*.xlsx},<application/vnd.openxmlformats-officedocument.*,application/vnd.ms-excel> open -a Numbers.app
+filetype {*.mkv},<video/x-matroska> open -a Vlc.app
 
 nnoremap I cw<c-a>
 nnoremap cc cw<c-u>

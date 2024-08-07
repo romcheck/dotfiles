@@ -9,6 +9,6 @@ format = """\
   $pulumi\
   $character\
   """
-
-[pulumi]
-symbol = ""
+[directory]
+truncation_length = 5
+# truncate_to_repo = false

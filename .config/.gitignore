@@ -1,5 +1,6 @@
 *
 !.gitignore
-!base16-google-dark.sh
 !starship.toml
 !vifm
+!helix
+!k9s
