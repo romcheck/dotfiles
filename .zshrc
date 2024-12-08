@@ -1,24 +1,27 @@
-# path
-PATH="${KREW_ROOT:-$HOME/.krew}/bin:$(brew --prefix)/opt/libpq/bin:${HOME}/Documents/bin:$(brew --prefix)/opt/coreutils/libexec/gnubin:$(brew --prefix)/opt/gnu-sed/libexec/gnubin:$PATH"
+# shellcheck disable=SC1036,SC1058,SC1072,SC1073
 
-export XDG_CONFIG_HOME="${HOME}/.config"
+# path
+PATH="$HOME/.krew/bin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/Documents/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
+
+# private aliases
+# [ -r "$HOME/Documents/.zsh_private_aliases" ] && source "$HOME/Documents/.zsh_private_aliases"
+
+export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16
 export EDITOR=hx
-export K9S_CONFIG_DIR="${HOME}/.config/k9s"
+export K9S_CONFIG_DIR="$HOME/.config/k9s"
 
 # aliases
 alias cn="tr -d '\n' | pbcopy"
 alias c=pbcopy
-alias cat="bat -pp"
+alias ls="ls --color"
 alias find=fd
 alias ag=rg
 alias grep=rg
 alias vi=hx
 alias vim=hx
+# alias cat="bat -pp"
 # alias docker='colima nerdctl --'
-
-# private aliases
-[ -r "${HOME}/Documents/.zsh_private_aliases" ] && source "${HOME}/Documents/.zsh_private_aliases"
 
 # history
 HISTSIZE=500000
@@ -38,24 +41,22 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 
+# default S3 region
+export AWS_REGION=eu-central-1
+
 # disable bell
 unsetopt BEEP
 
 # completions
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
-  autoload -Uz compinit
+FPATH=$HOMEBREW_PREFIX/share/zsh-completions:$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH
+autoload -Uz compinit
+for dump in ~/.zcompdump(N.mh+24); do
   compinit
-fi
+done
+compinit -C
 
 # prompt
 eval "$(starship init zsh)"
 
-# default S3 region
-export AWS_REGION=eu-central-1
-
 # fzf history
-[ -f ~/.fzf.zsh ] && source "${HOME}/.fzf.zsh"
-
-# nodejs version manager
-eval "$(nodenv init -)"
+[ -f ~/.fzf.zsh ] && source "$HOME/.fzf.zsh"

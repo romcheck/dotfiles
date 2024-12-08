@@ -1,14 +1,8 @@
+command_timeout = 1000
 add_newline = false
-format = """\
-  $directory\
-  $git_branch\
-  $git_commit\
-  $git_state\
-  $git_status\
-  $terraform\
-  $pulumi\
-  $character\
-  """
-[directory]
-truncation_length = 5
-# truncate_to_repo = false
+# A minimal left prompt
+format = """$character"""
+# move the rest of the prompt to the right
+right_format = """$all"""
+# A continuation prompt that displays two filled-in arrows
+continuation_prompt = '▶▶ '

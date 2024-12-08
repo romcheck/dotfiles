@@ -4,18 +4,23 @@ set incsearch
 set ignorecase
 set vifminfo+=savedirs
 set wildmenu
+set mouse=a
 
 only
+
 mark h ~/
 mark z ~/.config/vifm/ vifmrc
 mark d ~/Downloads
 mark D ~/Documents
+mark f ~/icloud/family
+mark l "~/Library/Application Support/OpenVPN Connect/profiles"
+
 colorscheme onedark
 
-filetype {*.pdf},<application/pdf>,{*.jpg,*.jpeg,*.png},<image/*> open -a Preview.app
-filetype {*.doc,*.docx},<application/msword> open -a Pages.app
-filetype {*.xls,*.xlsx},<application/vnd.openxmlformats-officedocument.*,application/vnd.ms-excel> open -a Numbers.app
-filetype {*.mkv},<video/x-matroska> open -a Vlc.app
+filetype {*.pdf,*.jpg,*.jpeg,*.png} open -a Preview.app
+filetype {*.doc,*.docx,*.pages} open -a Pages.app
+filetype {*.xls,*.xlsx,*.numbers} open -a Numbers.app
+filetype {*.mkv} open -a Vlc.app
 
 nnoremap I cw<c-a>
 nnoremap cc cw<c-u>
