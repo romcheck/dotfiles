@@ -4,7 +4,7 @@
 PATH="$HOME/.krew/bin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/Documents/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
 
 # private aliases
-# [ -r "$HOME/Documents/.zsh_private_aliases" ] && source "$HOME/Documents/.zsh_private_aliases"
+[ -r "$HOME/Documents/.zsh_private_aliases" ] && source "$HOME/Documents/.zsh_private_aliases"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16

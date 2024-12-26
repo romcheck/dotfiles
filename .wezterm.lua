@@ -9,7 +9,11 @@ config.window_padding = {
   bottom = 0,
 }
 
-config.window_decorations = "NONE"
+config.initial_cols = 100
+config.initial_rows = 30
+
+-- config.window_decorations = "NONE"
+config.window_decorations = "RESIZE"
 
 config.keys = {
   {
