@@ -1,6 +1,6 @@
 *
 !.gitignore
-!skins
+!skins/
 !config.yaml
 !plugins.yaml
 !hotkeys.yaml
