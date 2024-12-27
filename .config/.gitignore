@@ -2,5 +2,5 @@
 !.gitignore
 !starship.toml
 !vifm
-!helix
+!helix/config.toml
 !k9s

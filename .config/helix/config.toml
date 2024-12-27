@@ -1,0 +1,20 @@
+theme = "penumbra+"
+
+[editor]
+bufferline = "multiple"
+insert-final-newline = false
+
+[editor.soft-wrap]
+enable = true
+
+[editor.file-picker]
+hidden = false
+
+[editor.gutters.line-numbers]
+min-width = 1
+
+[editor.statusline]
+left = ["mode", "spinner", "file-absolute-path", "read-only-indicator", "file-modification-indicator"]
+
+[keys.normal]
+q = ":xa"
