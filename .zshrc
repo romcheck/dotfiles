@@ -58,5 +58,8 @@ compinit -C
 # prompt
 eval "$(starship init zsh)"
 
+# homebrew
+eval "$(brew shellenv)"
+
 # fzf history
 [ -f ~/.fzf.zsh ] && source "$HOME/.fzf.zsh"
