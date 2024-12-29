@@ -1,6 +1,10 @@
 *
 !.gitignore
+!*/
+!vifm/vifmrc
+!vifm/colors/*
+!k9s/*.yaml
+!k9s/skins/*
 !starship.toml
-!vifm
 !helix/config.toml
-!k9s
+!yandex-cloud/config.yaml

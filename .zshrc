@@ -1,10 +1,13 @@
 # shellcheck disable=SC1036,SC1058,SC1072,SC1073
 
+# homebrew
+eval "$(brew shellenv)"
+
 # path
-PATH="$HOME/.krew/bin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/Documents/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
+PATH="$HOME/.krew/bin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
 
 # private aliases
-[ -r "$HOME/Documents/.zsh_private_aliases" ] && source "$HOME/Documents/.zsh_private_aliases"
+[ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16
@@ -15,7 +18,7 @@ export K9S_CONFIG_DIR="$HOME/.config/k9s"
 alias cn="tr -d '\n' | pbcopy"
 alias c=pbcopy
 alias ls="ls --color"
-alias find=fd
+# alias find=fd
 alias ag=rg
 alias grep=rg
 alias vi=hx
@@ -57,9 +60,6 @@ compinit -C
 
 # prompt
 eval "$(starship init zsh)"
-
-# homebrew
-eval "$(brew shellenv)"
 
 # fzf history
 [ -f ~/.fzf.zsh ] && source "$HOME/.fzf.zsh"

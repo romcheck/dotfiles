@@ -12,6 +12,7 @@ mark h ~/
 mark z ~/.config/vifm/ vifmrc
 mark d ~/Downloads
 mark D ~/Documents
+mark i ~/icloud
 mark f ~/icloud/family
 mark l "~/Library/Application Support/OpenVPN Connect/profiles"
 

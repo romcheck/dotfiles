@@ -1,7 +1,7 @@
 [user]
     email = romcheck@gmail.com
     name = romcheck
-    signingkey = ~/Documents/.id_rsa.pub
+    signingkey = ~/icloud/.id_rsa.pub
 
 [core]
     excludesfile = ~/.gitignore
@@ -31,4 +31,4 @@
     format = ssh
 
 [include]
-    path = ~/Documents/.gitconfig
+    path = ~/icloud/.gitconfig
