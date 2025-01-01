@@ -1,8 +1,5 @@
 # shellcheck disable=SC1036,SC1058,SC1072,SC1073
 
-# homebrew
-eval "$(brew shellenv)"
-
 # path
 PATH="$HOME/.krew/bin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
 
@@ -28,6 +25,7 @@ alias vim=hx
 
 # history
 HISTSIZE=500000
+HISTFILE=icloud/.zsh_history
 export SAVEHIST=500000
 export HISTSIZE=$SAVEHIST
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
@@ -43,6 +41,9 @@ setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
+
+# fzf history
+[ -r "$HOMEBREW_PREFIX/bin/fzf" ] && source <(fzf --zsh)
 
 # default S3 region
 export AWS_REGION=eu-central-1
@@ -60,6 +61,3 @@ compinit -C
 
 # prompt
 eval "$(starship init zsh)"
-
-# fzf history
-[ -f ~/.fzf.zsh ] && source "$HOME/.fzf.zsh"
