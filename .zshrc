@@ -1,7 +1,7 @@
 # shellcheck disable=SC1036,SC1058,SC1072,SC1073
 
 # path
-PATH="$HOME/.krew/bin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
+PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
 
 # private aliases
 [ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"
@@ -25,7 +25,7 @@ alias vim=hx
 
 # history
 HISTSIZE=500000
-HISTFILE=icloud/.zsh_history
+HISTFILE=~/icloud/.zsh_history
 export SAVEHIST=500000
 export HISTSIZE=$SAVEHIST
 setopt BANG_HIST                 # Treat the '!' character specially during expansion.
