@@ -7,20 +7,20 @@ PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-s
 [ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"
 
 export XDG_CONFIG_HOME="$HOME/.config"
-export BAT_THEME=base16
+export BAT_THEME=base16-256
 export EDITOR=hx
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
 
 # aliases
 alias cn="tr -d '\n' | pbcopy"
 alias c=pbcopy
-alias ls="ls --color"
-# alias find=fd
+alias ls=eza
+alias find=fd
 alias ag=rg
 alias grep=rg
 alias vi=hx
 alias vim=hx
-# alias cat="bat -pp"
+alias cat="bat -pp"
 # alias docker='colima nerdctl --'
 
 # history
