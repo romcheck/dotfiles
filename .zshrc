@@ -1,7 +1,7 @@
 # shellcheck disable=SC1036,SC1058,SC1072,SC1073
 
 # path
-PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH"
+PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH:$HOME/go/bin"
 
 # private aliases
 [ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"

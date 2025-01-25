@@ -11,9 +11,11 @@
 
 [pager]
    delta = delta
+   deltashow = delta
 
 [alias]
    delta = diff
+   deltashow = show
 
 [delta]
   max-line-length = 0
