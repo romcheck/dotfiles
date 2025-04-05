@@ -17,6 +17,7 @@ mark f ~/icloud/family
 mark l "~/Library/Application Support/OpenVPN Connect/profiles"
 
 colorscheme onedark
+"colorscheme dwmlight
 
 filetype {*.pdf,*.jpg,*.jpeg,*.png} open -a Preview.app
 filetype {*.doc,*.docx,*.pages} open -a Pages.app

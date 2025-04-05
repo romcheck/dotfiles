@@ -66,6 +66,7 @@ config.keys = {
 config.use_fancy_tab_bar = false
 
 config.color_scheme = 'OneDark (base16)'
+-- config.color_scheme = 'One Light (base16)'
 
 config.font_size = 15
 config.bold_brightens_ansi_colors = No
