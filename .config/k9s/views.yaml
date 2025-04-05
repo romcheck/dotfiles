@@ -1,0 +1,18 @@
+views:
+  v1/pods:
+    # Overrides default sort column
+    sortColumn: AGE:asc
+    columns:
+      - NAME
+      - STATUS
+      - NODE IP:.status.hostIP
+  v1/nodes:
+    sortColumn: NODE POOL:asc
+    columns:
+      - NAME
+      - STATUS
+      - ZONE:.metadata.labels.topology\.kubernetes\.io/zone
+      - CAPACITY TYPE:.metadata.labels.karpenter\.sh/capacity-type
+      - NODE POOL:.metadata.labels.karpenter\.sh/nodepool
+      - INSTANCE TYPE:.metadata.labels.beta\.kubernetes\.io/instance-type
+      - ARCH:.metadata.labels.beta\.kubernetes\.io/arch
