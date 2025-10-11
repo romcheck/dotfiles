@@ -1,9 +1,10 @@
 theme = "penumbra+"
 # theme = "onelight"
+# theme = "alabaster"
 
 [editor]
 bufferline = "multiple"
-insert-final-newline = false
+# insert-final-newline = false
 
 [editor.soft-wrap]
 enable = true

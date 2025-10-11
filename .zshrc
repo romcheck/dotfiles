@@ -1,10 +1,10 @@
 # shellcheck disable=SC1036,SC1058,SC1072,SC1073
 
 # path
-PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/curl/bin:/opt/cprocsp/bin:$HOME/.nodenv/shims:$PATH:$HOME/go/bin"
+PATH="$HOME/go/bin:$HOME/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
 
 # private aliases
-[ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"
+#[ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16-256
@@ -15,10 +15,6 @@ export K9S_CONFIG_DIR="$HOME/.config/k9s"
 alias cn="tr -d '\n' | pbcopy"
 alias c=pbcopy
 alias ls=eza
-alias la="eza -la"
-alias ll="eza -l"
-alias find=fd
-alias ag=rg
 alias grep=rg
 alias vi=hx
 alias vim=hx
@@ -42,5 +38,21 @@ compinit -C
 # prompt
 eval "$(starship init zsh)"
 
-# atuin history
-eval "$(atuin init zsh)"
+# disable zsh history
+HISTFILE=/dev/null
+HISTSIZE=0
+SAVEHIST=0
+
+# Disable zsh session saving
+unsetopt SHARE_HISTORY  # optional: stops shared history
+zstyle ':session:*' auto-save no
+zstyle ':session:*' auto-restore no
+
+#Init Atuin without the up-arrow override
+eval "$(atuin init zsh --disable-up-arrow)"
+
+# Bind Ctrl-P to launch Atuin search
+bindkey '^P' atuin-search
+
+# helix
+export HELIX_LOG=/dev/null

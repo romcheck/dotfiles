@@ -9,11 +9,10 @@ set mouse=a
 only
 
 mark h ~/
-mark z ~/.config/vifm/ vifmrc
+mark z ~/.config/vifm vifmrc
 mark d ~/Downloads
 mark D ~/Documents
 mark i ~/icloud
-mark f ~/icloud/family
 mark l "~/Library/Application Support/OpenVPN Connect/profiles"
 
 colorscheme onedark
@@ -22,7 +21,7 @@ colorscheme onedark
 filetype {*.pdf,*.jpg,*.jpeg,*.png} open -a Preview.app
 filetype {*.doc,*.docx,*.pages} open -a Pages.app
 filetype {*.xls,*.xlsx,*.numbers} open -a Numbers.app
-filetype {*.mkv} open -a Vlc.app
+filetype {*.mkv,*.mov} open -a Vlc.app
 
 nnoremap I cw<c-a>
 nnoremap cc cw<c-u>
@@ -31,3 +30,8 @@ map s :shell<cr>
 map ы :shell<cr>
 map q :quit<cr>
 map й :quit<cr>
+
+nnoremap <C-n> :set sort=name<cr>
+nnoremap <C-t> :set sort=mtime<cr>
+nnoremap <C-s> :set sort=size<cr>
+nnoremap <C-o> :invert o<cr>

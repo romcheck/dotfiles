@@ -6,6 +6,7 @@ views:
       - NAME
       - STATUS
       - NODE IP:.status.hostIP
+      - CPU/L
   v1/nodes:
     sortColumn: NODE POOL:asc
     columns:

@@ -2,6 +2,8 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 
+config.send_composed_key_when_left_alt_is_pressed = true
+
 config.window_padding = {
   left = 0,
   right = 0,
@@ -13,6 +15,8 @@ config.initial_cols = 100
 config.initial_rows = 30
 
 config.window_decorations = "RESIZE"
+
+-- config.quit_when_all_windows_are_closed = false
 
 config.keys = {
   {
@@ -68,7 +72,7 @@ config.use_fancy_tab_bar = false
 config.color_scheme = 'OneDark (base16)'
 -- config.color_scheme = 'One Light (base16)'
 
-config.font_size = 15
+config.font_size = 14
 config.bold_brightens_ansi_colors = No
 config.font = wezterm.font 'PragmataPro Mono Liga'
 config.font_rules = {

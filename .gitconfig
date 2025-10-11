@@ -6,7 +6,7 @@
 [core]
     excludesfile = ~/.gitignore
     abbrev = 8
-    pager = cat
+    pager = bat
     symlinks = true
 
 [pager]
