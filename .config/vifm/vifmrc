@@ -18,9 +18,9 @@ mark l "~/Library/Application Support/OpenVPN Connect/profiles"
 colorscheme onedark
 "colorscheme dwmlight
 
-filetype {*.pdf,*.jpg,*.jpeg,*.png} open -a Preview.app
-filetype {*.doc,*.docx,*.pages} open -a Pages.app
-filetype {*.xls,*.xlsx,*.numbers} open -a Numbers.app
+filetype {*.pdf,*.jpg,*.jpeg,*.png} open -a preview.app
+filetype {*.doc,*.docx,*.pages} open -a Pages\ Creator\ Studio
+filetype {*.xls,*.xlsx,*.numbers} open -a Numbers\ Creator\ Studio
 filetype {*.mkv,*.mov} open -a Vlc.app
 
 nnoremap I cw<c-a>
