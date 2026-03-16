@@ -7,6 +7,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16-256
 export EDITOR=hx
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
+export KUBECONFIG="$HOME/icloud/.kubeconfig"
 
 # aliases
 alias cn="tr -d '\n' | pbcopy"
