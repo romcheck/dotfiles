@@ -18,6 +18,7 @@ alias ls=eza
 alias grep=rg
 alias vi=hx
 alias vim=hx
+alias x=hx
 alias v="vifm ."
 alias cat="bat -pp"
 # alias docker='colima nerdctl --'

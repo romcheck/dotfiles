@@ -5,6 +5,35 @@ set -e
 
 echo "🚀 Starting yadm bootstrap..."
 
+# --- 0. Prepare iCloud Symlink ---
+# This simplifies paths and avoids issues with spaces in scripts
+ICLOUD_ORIGINAL="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+ICLOUD_LINK="$HOME/icloud"
+
+if [ ! -L "$ICLOUD_LINK" ]; then
+    echo "🔗 Creating iCloud symlink..."
+    ln -s "$ICLOUD_ORIGINAL" "$ICLOUD_LINK"
+else
+    echo "✅ iCloud symlink already exists."
+fi
+
+# --- 1. Path & Requirement Checks ---
+echo "🔍 Verifying cloud paths..."
+
+# Now we can use the clean symlink path
+CUSTOM_KEYCHAIN="$ICLOUD_LINK/envchain.keychain-db"
+SSH_KEY="$ICLOUD_LINK/.id_rsa"
+
+if [ ! -f "$CUSTOM_KEYCHAIN" ]; then
+    echo "❌ Error: Keychain not found at $CUSTOM_KEYCHAIN"
+    exit 1
+fi
+
+if [ ! -f "$SSH_KEY" ]; then
+    echo "❌ Error: SSH Key not found at $SSH_KEY"
+    exit 1
+fi
+
 # --- 1. macOS System Settings (defaults) ---
 echo "⚙️  Applying macOS system settings..."
 
@@ -47,6 +76,29 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 10
 # Remap CAPS LOCK to CTRL (for Apple internal keyboard)
 defaults write -g com.apple.keyboard.modifiermapping.1452-630-0 -array '<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer><key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer></dict>'
 
+
+# --- 1.5 Keychain Integration ---
+echo "🔐 Linking custom keychain from iCloud..."
+
+# Use a specific path (double-quote for spaces in iCloud path)
+CUSTOM_KEYCHAIN="$HOME/Library/Mobile Documents/com~apple~CloudDocs/envchain.keychain-db"
+
+if [ -f "$CUSTOM_KEYCHAIN" ]; then
+    # Get only user keychains, remove quotes for easier processing
+    # We use 'sed' to remove leading spaces and quotes from the output
+    CURRENT_USER_LIST=$(security list-keychains -d user | sed 's/^[[:space:]]*"//;s/"[[:space:]]*$//')
+
+    if [[ "$CURRENT_USER_LIST" != *"$CUSTOM_KEYCHAIN"* ]]; then
+        echo "🔗 Adding custom keychain to the user search list..."
+        # We set the new list: existing user keychains + our custom one
+        # This will NOT affect /Library/Keychains/System.keychain
+        security list-keychains -d user -s $CURRENT_USER_LIST "$CUSTOM_KEYCHAIN"
+    else
+        echo "✅ Keychain already linked in user domain."
+    fi
+else
+    echo "⚠️  Custom keychain file not found in iCloud."
+fi
 
 # --- 2. Software Installation via Homebrew ---
 if command -v brew >/dev/null 2>&1; then
