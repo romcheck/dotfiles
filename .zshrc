@@ -63,3 +63,47 @@ bindkey '^P' atuin-search
 
 # disable helix logs
 export HELIX_LOG=/dev/null
+
+
+# --- Homebrew Leaf-Only Sync ---
+brew() {
+  # Запускаем реальный brew
+  command brew "$@"
+  local EXIT_CODE=$?
+  
+  # Расширенный список команд, которые меняют состав пакетов
+  # Добавили: rm, uninstall, reinstall, cleanup
+  local TRIGGER_COMMANDS=" install rm uninstall reinstall tap untap cask cleanup "
+  
+  # Обновляем Brewfile только если команда завершилась успешно и она есть в списке триггеров
+  if [[ $EXIT_CODE -eq 0 && "$TRIGGER_COMMANDS" =~ " $1 " ]]; then
+    echo "🧹 Syncing clean Brewfile (leaves only)..."
+    
+    local BREWFILE="$HOME/Brewfile"
+    local TEMP_BREWFILE=$(mktemp)
+    
+    # 1. Генерируем полный дамп во временный файл
+    command brew bundle dump --force --file="$TEMP_BREWFILE"
+    
+    # 2. Получаем список "листьев" (только то, что ставилось вручную)
+    local LEAVES=$(command brew leaves | xargs echo)
+    
+    # 3. Фильтруем: оставляем Taps, Casks, Mas и только те brew, что есть в LEAVES
+    {
+        # Используем 'command grep', чтобы игнорировать твой алиас на 'rg'
+        command grep -E "^(tap|cask|mas)" "$TEMP_BREWFILE"
+        
+        command grep "^brew " "$TEMP_BREWFILE" | while read -r line; do
+            local pkg=$(echo "$line" | cut -d '"' -f 2)
+            if [[ " $LEAVES " == *" $pkg "* ]]; then
+                echo "$line"
+            fi
+        done
+    } > "$BREWFILE"
+    
+    rm "$TEMP_BREWFILE"
+    echo "✅ Brewfile updated at $BREWFILE"
+  fi
+  
+  return $EXIT_CODE
+}
