@@ -1,7 +1,6 @@
-if [[ $(uname -m) == 'x86_64' ]]; then
-  HOMEBREW_PREFIX='/usr/local'
-else
-  HOMEBREW_PREFIX='/opt/homebrew'
-fi
-
-eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+export HOMEBREW_PREFIX="/opt/homebrew"
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+export HOMEBREW_REPOSITORY="/opt/homebrew"
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}"
+export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}"
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"

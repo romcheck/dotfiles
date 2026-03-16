@@ -6,7 +6,7 @@ set -e
 echo "🚀 Starting yadm bootstrap..."
 
 # --- 0. Prepare iCloud Symlink ---
-# This simplifies paths and avoids issues with spaces in scripts
+# Using a symlink simplifies paths and avoids issues with spaces in iCloud path
 ICLOUD_ORIGINAL="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 ICLOUD_LINK="$HOME/icloud"
 
@@ -19,8 +19,6 @@ fi
 
 # --- 1. Path & Requirement Checks ---
 echo "🔍 Verifying cloud paths..."
-
-# Now we can use the clean symlink path
 CUSTOM_KEYCHAIN="$ICLOUD_LINK/envchain.keychain-db"
 SSH_KEY="$ICLOUD_LINK/.id_rsa"
 
@@ -34,88 +32,97 @@ if [ ! -f "$SSH_KEY" ]; then
     exit 1
 fi
 
-# --- 1. macOS System Settings (defaults) ---
+# --- 2. Homebrew Installation ---
+if ! command -v brew >/dev/null 2>&1; then
+    echo "🍺 Homebrew not found. Installing via official .pkg..."
+    
+    INSTALLER_URL="https://github.com/Homebrew/brew/releases/latest/download/Homebrew.pkg"
+    PKG_PATH="/tmp/Homebrew.pkg"
+    
+    curl -L "$INSTALLER_URL" -o "$PKG_PATH"
+    
+    echo "🔐 Please enter your password for Homebrew installation:"
+    sudo installer -pkg "$PKG_PATH" -target /
+    rm "$PKG_PATH"
+
+    # Set up shell environment for current session (Apple Silicon)
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    echo "✅ Homebrew installed."
+else
+    echo "✅ Homebrew is already installed."
+fi
+
+# --- 3. macOS System Settings (defaults) ---
 echo "⚙️  Applying macOS system settings..."
 
-# Disable "Natural Scrolling" (reverting to classic scrolling behavior)
+# Scrolling & Fonts
 defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
-
-# Disable Font Smoothing (making fonts thinner and sharper)
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
-# Set Dock icon size to 36 pixels
-defaults write com.apple.dock tilesize -int 36
-
-# Enable Dock auto-hide
+# Dock
+defaults write com.apple.dock tilesize -int 144
 defaults write com.apple.dock autohide -bool true
-
-# Do not show recent applications in Dock
 defaults write com.apple.dock show-recents -bool false
 
-# Always show all file extensions in Finder
+# Finder
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-
-# Set default search scope in Finder to current folder (SCcf)
 defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-
-# Disable warning when changing a file extension
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
-# Enable "Tap to click" for the current user
+# Trackpad & Keyboard
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-
-# Enable "Tap to click" for the login screen
 defaults write com.apple.applemultitouchtrackpad Clicking -bool true
-
-# Set the fastest key repeat rate
 defaults write NSGlobalDomain KeyRepeat -int 1
-
-# Set the shortest delay until repeat
 defaults write NSGlobalDomain InitialKeyRepeat -int 10
 
-# Remap CAPS LOCK to CTRL (for Apple internal keyboard)
+# Caps Lock to Ctrl (Internal Keyboard)
 defaults write -g com.apple.keyboard.modifiermapping.1452-630-0 -array '<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer><key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer></dict>'
 
+# --- 4. Keychain & SSH Integration ---
+echo "🔐 Integrating secrets and keys..."
 
-# --- 1.5 Keychain Integration ---
-echo "🔐 Linking custom keychain from iCloud..."
+# Resolve the real path to handle symlinks correctly for comparison
+REAL_CUSTOM_PATH=$(readlink -f "$CUSTOM_KEYCHAIN")
 
-# Use a specific path (double-quote for spaces in iCloud path)
-CUSTOM_KEYCHAIN="$HOME/Library/Mobile Documents/com~apple~CloudDocs/envchain.keychain-db"
+# Read current keychains into array, cleaning up quotes and spaces
+mapfile -t KEYCHAINS < <(security list-keychains -d user | sed 's/^[[:space:]]*"//;s/"[[:space:]]*$//')
 
-if [ -f "$CUSTOM_KEYCHAIN" ]; then
-    # Get only user keychains, remove quotes for easier processing
-    # We use 'sed' to remove leading spaces and quotes from the output
-    CURRENT_USER_LIST=$(security list-keychains -d user | sed 's/^[[:space:]]*"//;s/"[[:space:]]*$//')
-
-    if [[ "$CURRENT_USER_LIST" != *"$CUSTOM_KEYCHAIN"* ]]; then
-        echo "🔗 Adding custom keychain to the user search list..."
-        # We set the new list: existing user keychains + our custom one
-        # This will NOT affect /Library/Keychains/System.keychain
-        security list-keychains -d user -s $CURRENT_USER_LIST "$CUSTOM_KEYCHAIN"
-    else
-        echo "✅ Keychain already linked in user domain."
-    fi
+# Check if it already exists using wildcard matching (ShellCheck friendly)
+if [[ " ${KEYCHAINS[*]} " == *"${REAL_CUSTOM_PATH}"* ]]; then
+    echo "✅ Keychain already in search list."
 else
-    echo "⚠️  Custom keychain file not found in iCloud."
+    echo "🔗 Adding envchain.keychain-db to current list..."
+    # We append to existing list instead of overwriting, keeping OpenVPN etc.
+    KEYCHAINS+=("$REAL_CUSTOM_PATH")
+    security list-keychains -d user -s "${KEYCHAINS[@]}"
 fi
 
-# --- 2. Software Installation via Homebrew ---
+echo "🔑 Adding SSH key to agent..."
+ssh-add --apple-use-keychain "$SSH_KEY"
+
+# --- 5. Homebrew Permissions & Bundle ---
 if command -v brew >/dev/null 2>&1; then
-    if [ -f "$HOME/Brewfile" ]; then
-        echo "🍺 Installing software from $HOME/Brewfile..."
-        brew bundle --file="$HOME/Brewfile"
+    BREW_SHARE="$(brew --prefix)/share"
+    
+    # Check if 'group' or 'others' have write access (the BSD way)
+    # stat -f %Lp returns permissions in octal (e.g., 775)
+    # We check if the last two digits are greater than 5 (meaning 6 or 7, which is write access)
+    PERMS=$(stat -f "%Lp" "$BREW_SHARE")
+    if [[ "$PERMS" =~ [0-9][6-7][0-9] ]] || [[ "$PERMS" =~ [0-9][0-9][6-7] ]]; then
+        echo "🛡️  Securing Homebrew permissions..."
+        sudo chmod -R go-w "$BREW_SHARE"
     else
-        echo "⚠️  Brewfile not found in $HOME"
+        echo "✅ Homebrew permissions are already secure ($PERMS)."
     fi
-else
-    echo "❌ Homebrew is not installed. Skipping package installation."
+
+    if [ -f "$HOME/Brewfile" ]; then
+        echo "📦 Installing software from Brewfile..."
+        brew bundle --file="$HOME/Brewfile"
+    fi
 fi
 
-
-# --- 3. Finalization ---
-echo "🔄 Restarting Finder, Dock, and SystemUIServer..."
-# Restart UI processes to apply changes without a full reboot
+# --- 6. Finalization ---
+echo "🔄 Restarting UI processes..."
 killall Finder Dock SystemUIServer > /dev/null 2>&1 || true
 
-echo "✅ All done! Note: You might need to Logout/Login for all changes (like font smoothing and scroll) to take effect."
+echo "✅ Bootstrap complete! Your environment is ready."

@@ -1,10 +1,7 @@
-# shellcheck disable=SC1036,SC1058,SC1072,SC1073
+# shellcheck disable=SC1009,SC1036,SC1058,SC1072,SC1073
 
 # path
 PATH="$HOME/go/bin:$HOME/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
-
-# private aliases
-#[ -r "$HOME/icloud/.zsh_private_aliases" ] && source "$HOME/icloud/.zsh_private_aliases"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16-256
@@ -30,12 +27,19 @@ export AWS_REGION=eu-central-1
 unsetopt BEEP
 
 # completions
-FPATH=$HOMEBREW_PREFIX/share/zsh-completions:$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH
+# -U ensures unique elements (no duplicates in FPATH/PATH)
+typeset -U fpath FPATH
+
+# Add Homebrew completions to fpath
+fpath=($HOMEBREW_PREFIX/share/zsh-completions $HOMEBREW_PREFIX/share/zsh/site-functions $fpath)
+
+# Fast compinit: only regenerate dump file if it's older than 24h
 autoload -Uz compinit
-for dump in ~/.zcompdump(N.mh+24); do
+if [[ -n $HOME/.zcompdump(#qN.mh+24) ]]; then
   compinit
-done
-compinit -C
+else
+  compinit -C
+fi
 
 # prompt
 eval "$(starship init zsh)"
@@ -45,16 +49,17 @@ HISTFILE=/dev/null
 HISTSIZE=0
 SAVEHIST=0
 
-# Disable zsh session saving
+# disable zsh session saving
 unsetopt SHARE_HISTORY  # optional: stops shared history
 zstyle ':session:*' auto-save no
 zstyle ':session:*' auto-restore no
 
-#Init Atuin without the up-arrow override
-eval "$(atuin init zsh --disable-up-arrow)"
+# init Atuin without the up-arrow override
+# eval "$(atuin init zsh --disable-up-arrow)"
+eval "$(atuin init zsh)"
 
-# Bind Ctrl-P to launch Atuin search
+# bind CTRL-P to launch Atuin search
 bindkey '^P' atuin-search
 
-# helix
+# disable helix logs
 export HELIX_LOG=/dev/null
