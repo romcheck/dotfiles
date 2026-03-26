@@ -103,7 +103,7 @@ ssh-add --apple-use-keychain "$SSH_KEY"
 # --- 5. Homebrew Permissions & Bundle ---
 if command -v brew >/dev/null 2>&1; then
     BREW_SHARE="$(brew --prefix)/share"
-    
+
     # Check if 'group' or 'others' have write access (the BSD way)
     # stat -f %Lp returns permissions in octal (e.g., 775)
     # We check if the last two digits are greater than 5 (meaning 6 or 7, which is write access)
@@ -121,7 +121,26 @@ if command -v brew >/dev/null 2>&1; then
     fi
 fi
 
-# --- 6. Finalization ---
+# --- 6. Path to the PAM sudo configuration ---
+PAM_FILE="/etc/pam.d/sudo"
+TOUCHID_LINE="auth       sufficient     pam_tid.so"
+
+# Check if the line already exists to avoid duplicates
+if ! grep -q "pam_tid.so" "$PAM_FILE"; then
+    echo "Enabling Touch ID for sudo..."
+
+    # Use sed to insert the line at the top (after the first line comment)
+    # This requires sudo because /etc/pam.d/ is system-protected
+    sudo sed -i '' "2i\\
+$TOUCHID_LINE
+" "$PAM_FILE"
+
+    echo "Touch ID enabled successfully."
+else
+    echo "Touch ID for sudo is already configured."
+fi
+
+# --- 7. Finalization ---
 echo "🔄 Restarting UI processes..."
 killall Finder Dock SystemUIServer > /dev/null 2>&1 || true
 
