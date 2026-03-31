@@ -5,7 +5,7 @@ set -e
 
 echo "🚀 Starting yadm bootstrap..."
 
-# --- 0. Prepare iCloud Symlink ---
+# --- Prepare iCloud Symlink ---
 # Using a symlink simplifies paths and avoids issues with spaces in iCloud path
 ICLOUD_ORIGINAL="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 ICLOUD_LINK="$HOME/icloud"
@@ -17,22 +17,20 @@ else
     echo "✅ iCloud symlink already exists."
 fi
 
-# --- 1. Path & Requirement Checks ---
+# --- Keychain & SSH Integration ---
 echo "🔍 Verifying cloud paths..."
-CUSTOM_KEYCHAIN="$ICLOUD_LINK/envchain.keychain-db"
 SSH_KEY="$ICLOUD_LINK/.id_rsa"
-
-if [ ! -f "$CUSTOM_KEYCHAIN" ]; then
-    echo "❌ Error: Keychain not found at $CUSTOM_KEYCHAIN"
-    exit 1
-fi
 
 if [ ! -f "$SSH_KEY" ]; then
     echo "❌ Error: SSH Key not found at $SSH_KEY"
     exit 1
 fi
 
-# --- 2. Homebrew Installation ---
+echo "🔑 Adding SSH key to agent..."
+ssh-add --apple-use-keychain "$SSH_KEY"
+
+
+# --- Homebrew Installation ---
 if ! command -v brew >/dev/null 2>&1; then
     echo "🍺 Homebrew not found. Installing via official .pkg..."
     
@@ -52,7 +50,7 @@ else
     echo "✅ Homebrew is already installed."
 fi
 
-# --- 3. macOS System Settings (defaults) ---
+# --- macOS System Settings (defaults) ---
 echo "⚙️  Applying macOS system settings..."
 
 # Scrolling & Fonts
@@ -78,29 +76,7 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 15
 # Caps Lock to Ctrl (Internal Keyboard)
 defaults write -g com.apple.keyboard.modifiermapping.1452-630-0 -array '<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer><key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer></dict>'
 
-# --- 4. Keychain & SSH Integration ---
-echo "🔐 Integrating secrets and keys..."
-
-# Resolve the real path to handle symlinks correctly for comparison
-REAL_CUSTOM_PATH=$(readlink -f "$CUSTOM_KEYCHAIN")
-
-# Read current keychains into array, cleaning up quotes and spaces
-mapfile -t KEYCHAINS < <(security list-keychains -d user | sed 's/^[[:space:]]*"//;s/"[[:space:]]*$//')
-
-# Check if it already exists using wildcard matching (ShellCheck friendly)
-if [[ " ${KEYCHAINS[*]} " == *"${REAL_CUSTOM_PATH}"* ]]; then
-    echo "✅ Keychain already in search list."
-else
-    echo "🔗 Adding envchain.keychain-db to current list..."
-    # We append to existing list instead of overwriting, keeping OpenVPN etc.
-    KEYCHAINS+=("$REAL_CUSTOM_PATH")
-    security list-keychains -d user -s "${KEYCHAINS[@]}"
-fi
-
-echo "🔑 Adding SSH key to agent..."
-ssh-add --apple-use-keychain "$SSH_KEY"
-
-# --- 5. Homebrew Permissions & Bundle ---
+# --- Homebrew Permissions & Bundle ---
 if command -v brew >/dev/null 2>&1; then
     BREW_SHARE="$(brew --prefix)/share"
 
@@ -121,7 +97,7 @@ if command -v brew >/dev/null 2>&1; then
     fi
 fi
 
-# --- 6. Path to the PAM sudo configuration ---
+# --- Path to the PAM sudo configuration ---
 PAM_FILE="/etc/pam.d/sudo"
 TOUCHID_LINE="auth       sufficient     pam_tid.so"
 
@@ -140,7 +116,15 @@ else
     echo "Touch ID for sudo is already configured."
 fi
 
-# --- 7. Finalization ---
+# --- Fix sops completion ---
+CORRECT_COMPLETION="$HOME/.config/yadm/files/_sops"
+BREW_COMPLETION="$HOMEBREW_PREFIX/share/zsh/site-functions/_sops"
+
+if [ -f "$CORRECT_COMPLETION" ]; then
+cp "$CORRECT_COMPLETION" "$BREW_COMPLETION"
+fi
+
+# --- Finalization ---
 echo "🔄 Restarting UI processes..."
 killall Finder Dock SystemUIServer > /dev/null 2>&1 || true
 

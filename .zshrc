@@ -3,11 +3,15 @@
 # path
 PATH="$HOME/go/bin:$HOME/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
 
+# env variables
 export XDG_CONFIG_HOME="$HOME/.config"
 export BAT_THEME=base16-256
 export EDITOR=hx
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
 export KUBECONFIG="$HOME/icloud/.kubeconfig"
+
+# default S3 region
+export AWS_REGION=eu-central-1
 
 # aliases
 alias cn="tr -d '\n' | pbcopy"
@@ -19,10 +23,6 @@ alias vim=hx
 alias x=hx
 alias v="vifm ."
 alias cat="bat -pp"
-# alias docker='colima nerdctl --'
-
-# default S3 region
-export AWS_REGION=eu-central-1
 
 # disable bell
 unsetopt BEEP
@@ -31,10 +31,10 @@ unsetopt BEEP
 # -U ensures unique elements (no duplicates in FPATH/PATH)
 typeset -U fpath FPATH
 
-# Add Homebrew completions to fpath
+# add Homebrew completions to fpath
 fpath=($HOMEBREW_PREFIX/share/zsh-completions $HOMEBREW_PREFIX/share/zsh/site-functions $fpath)
 
-# Fast compinit: only regenerate dump file if it's older than 24h
+# fast compinit: only regenerate dump file if it's older than 24h
 autoload -Uz compinit
 if [[ -n $HOME/.zcompdump(#qN.mh+24) ]]; then
   compinit
@@ -51,48 +51,35 @@ HISTSIZE=0
 SAVEHIST=0
 
 # disable zsh session saving
-unsetopt SHARE_HISTORY  # optional: stops shared history
+unsetopt SHARE_HISTORY
 zstyle ':session:*' auto-save no
 zstyle ':session:*' auto-restore no
 
-# init Atuin without the up-arrow override
-# eval "$(atuin init zsh --disable-up-arrow)"
+# init atuin history
 eval "$(atuin init zsh)"
 
-# bind CTRL-P to launch Atuin search
+# bind CTRL-P to launch atuin search
 bindkey '^P' atuin-search
 
-# disable helix logs
-export HELIX_LOG=/dev/null
-
-
-# --- Homebrew Leaf-Only Sync ---
+# --- homebrew leaf-only sync ---
 brew() {
-  # Запускаем реальный brew
   command brew "$@"
   local EXIT_CODE=$?
   
-  # Расширенный список команд, которые меняют состав пакетов
-  # Добавили: rm, uninstall, reinstall, cleanup
   local TRIGGER_COMMANDS=" install rm uninstall reinstall tap untap cask cleanup "
   
-  # Обновляем Brewfile только если команда завершилась успешно и она есть в списке триггеров
   if [[ $EXIT_CODE -eq 0 && "$TRIGGER_COMMANDS" =~ " $1 " ]]; then
     echo "🧹 Syncing clean Brewfile (leaves only)..."
     
     local BREWFILE="$HOME/Brewfile"
     local TEMP_BREWFILE=$(mktemp)
     
-    # 1. Генерируем полный дамп во временный файл
     command brew bundle dump --force --file="$TEMP_BREWFILE"
     
-    # 2. Получаем список "листьев" (только то, что ставилось вручную)
     local LEAVES=$(command brew leaves | xargs echo)
     
-    # 3. Фильтруем: оставляем Taps, Casks, Mas и только те brew, что есть в LEAVES
     {
-        # Используем 'command grep', чтобы игнорировать твой алиас на 'rg'
-        command grep -E "^(tap|cask|mas)" "$TEMP_BREWFILE"
+        command grep -E "^(tap|cask)" "$TEMP_BREWFILE"
         
         command grep "^brew " "$TEMP_BREWFILE" | while read -r line; do
             local pkg=$(echo "$line" | cut -d '"' -f 2)
@@ -108,3 +95,44 @@ brew() {
   
   return $EXIT_CODE
 }
+
+se() {
+  local d="$PWD"
+  local files=()
+
+  while [[ "$d" != "/" && "$d" != "$HOME/.." ]]; do
+    if [[ -f "$d/secrets.yaml" ]]; then
+      files=("$d/secrets.yaml" "${files[@]}")
+    fi
+    d="${d:h}"
+  done
+
+  if [[ ${#files[@]} -eq 0 ]]; then
+    "$@"
+    return $?
+  fi
+
+  local all_env=""
+  for f in "${files[@]}"; do
+    echo "🔓 Layering: $f"
+    local output
+    output=$(sops -d --output-type dotenv "$f" 2>/dev/null)
+    if [[ $? -eq 0 ]]; then
+      all_env+=$'\n'"$output"
+    else
+      echo "⚠️ Failed to decrypt $f (skipping)"
+    fi
+  done
+
+  (
+    if [[ -n "$all_env" ]]; then
+      while IFS= read -r line; do
+        [[ -n "$line" && "$line" != "#"* ]] && export "$line"
+      done <<< "$all_env"
+    fi
+
+    exec "$@"
+  )
+}
+
+compdef _precommand se

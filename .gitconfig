@@ -14,18 +14,18 @@
    deltashow = delta
 
 [alias]
-   delta = diff
-   deltashow = show
+    delta = diff
+    deltashow = show
 
 [delta]
-  max-line-length = 0
+    max-line-length = 0
 
 [commit]
     gpgsign = true
 
 [push]
     default = current
-	autoSetupRemote = true
+    autoSetupRemote = true
 
 [pull]
     ff = only
