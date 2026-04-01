@@ -1,7 +1,7 @@
 # shellcheck disable=SC1009,SC1036,SC1058,SC1072,SC1073
 
 # path
-PATH="$HOME/go/bin:$HOME/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
+PATH="$HOME/go/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
 
 # env variables
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -30,9 +30,10 @@ unsetopt BEEP
 # completions
 # -U ensures unique elements (no duplicates in FPATH/PATH)
 typeset -U fpath FPATH
+setopt EXTENDED_GLOB
 
 # add homebrew completions to fpath
-fpath=($HOMEBREW_PREFIX/share/zsh-completions $HOMEBREW_PREFIX/share/zsh/site-functions $fpath)
+fpath=($HOME/.zsh/completions $HOMEBREW_PREFIX/share/zsh-completions $HOMEBREW_PREFIX/share/zsh/site-functions $fpath)
 
 # fast compinit: only regenerate dump file if it's older than 24h
 autoload -Uz compinit
@@ -65,9 +66,9 @@ bindkey '^P' atuin-search
 brew() {
   command brew "$@"
   local EXIT_CODE=$?
-  
+
   local TRIGGER_COMMANDS=" install rm uninstall reinstall tap untap cask cleanup "
-  
+
   if [[ $EXIT_CODE -eq 0 && "$TRIGGER_COMMANDS" =~ " $1 " ]]; then
     echo "🧹 Syncing clean Brewfile (leaves only)..."
     
@@ -129,7 +130,34 @@ se() {
       fi
     done
 
-    exec "$@"
+    case "$1" in
+        kubectl|k9s)
+            local cmd="$1"
+            shift
+            local K8S_TOKEN=$(yc k8s create-token --token "$YC_TOKEN" 2>/dev/null | jq -r '.status.token')
+
+            if [[ -n "$K8S_TOKEN" && "$K8S_TOKEN" != "null" ]]; then
+                exec "$cmd" --token="$K8S_TOKEN" "$@"
+            else
+                echo "ERROR: Failed to extract k8s token. Check if YC_TOKEN is valid." >&2
+                exit 1
+            fi
+            ;;
+
+        yc)
+            local cmd="$1"
+            shift
+            local -a extra_args=("--token" "$YC_TOKEN")
+            [[ -n "$YC_CLOUD_ID" ]]  && extra_args+=("--cloud-id" "$YC_CLOUD_ID")
+            [[ -n "$YC_FOLDER_ID" ]] && extra_args+=("--folder-id" "$YC_FOLDER_ID")
+
+            exec "$cmd" "${extra_args[@]}" "$@"
+            ;;
+
+        *)
+            exec "$@"
+            ;;
+    esac
   )
 }
 
