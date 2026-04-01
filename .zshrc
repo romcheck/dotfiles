@@ -31,7 +31,7 @@ unsetopt BEEP
 # -U ensures unique elements (no duplicates in FPATH/PATH)
 typeset -U fpath FPATH
 
-# add Homebrew completions to fpath
+# add homebrew completions to fpath
 fpath=($HOMEBREW_PREFIX/share/zsh-completions $HOMEBREW_PREFIX/share/zsh/site-functions $fpath)
 
 # fast compinit: only regenerate dump file if it's older than 24h
@@ -101,35 +101,33 @@ se() {
   local files=()
 
   while [[ "$d" != "/" && "$d" != "$HOME/.." ]]; do
-    if [[ -f "$d/secrets.yaml" ]]; then
-      files=("$d/secrets.yaml" "${files[@]}")
-    fi
+    [[ -f "$d/secrets.yaml" ]] && files=("$d/secrets.yaml" "${files[@]}")
     d="${d:h}"
   done
 
   if [[ ${#files[@]} -eq 0 ]]; then
-    "$@"
-    return $?
+    exec "$@"
   fi
 
-  local all_env=""
-  for f in "${files[@]}"; do
-    echo "🔓 Layering: $f"
-    local output
-    output=$(sops -d --output-type dotenv "$f" 2>/dev/null)
-    if [[ $? -eq 0 ]]; then
-      all_env+=$'\n'"$output"
-    else
-      echo "⚠️ Failed to decrypt $f (skipping)"
-    fi
-  done
-
   (
-    if [[ -n "$all_env" ]]; then
+    set +x
+
+    trap 'echo "\n❌ Decryption interrupted. Aborting." >&2; exit 1' INT
+
+    for f in "${files[@]}"; do
+      echo "🔓 Layering: $f" >&2
+
       while IFS= read -r line; do
-        [[ -n "$line" && "$line" != "#"* ]] && export "$line"
-      done <<< "$all_env"
-    fi
+        if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then
+          export "${line}"
+        fi
+      done < <(sops -d --output-type dotenv "$f" 2>/dev/null)
+
+      if [[ $? -ne 0 ]]; then
+        echo "❌ Error decrypting $f. Execution halted." >&2
+        exit 1
+      fi
+    done
 
     exec "$@"
   )
