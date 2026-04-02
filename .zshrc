@@ -1,3 +1,4 @@
+#!/bin/zsh
 # shellcheck disable=SC1009,SC1036,SC1058,SC1072,SC1073
 
 # path
@@ -37,7 +38,7 @@ fpath=($HOME/.zsh/completions $HOMEBREW_PREFIX/share/zsh-completions $HOMEBREW_P
 
 # fast compinit: only regenerate dump file if it's older than 24h
 autoload -Uz compinit
-if [[ -n $HOME/.zcompdump(#qN.mh+24) ]]; then
+if [[ -n "$HOME/.zcompdump(#qN.mh+24)" ]]; then
   compinit
 else
   compinit -C
@@ -71,29 +72,29 @@ brew() {
 
   if [[ $EXIT_CODE -eq 0 && "$TRIGGER_COMMANDS" =~ " $1 " ]]; then
     echo "🧹 Syncing clean Brewfile (leaves only)..."
-    
+
     local BREWFILE="$HOME/Brewfile"
     local TEMP_BREWFILE=$(mktemp)
-    
+
     command brew bundle dump --force --file="$TEMP_BREWFILE"
-    
+
     local LEAVES=$(command brew leaves | xargs echo)
-    
+
     {
-        command grep -E "^(tap|cask)" "$TEMP_BREWFILE"
-        
-        command grep "^brew " "$TEMP_BREWFILE" | while read -r line; do
-            local pkg=$(echo "$line" | cut -d '"' -f 2)
-            if [[ " $LEAVES " == *" $pkg "* ]]; then
-                echo "$line"
-            fi
-        done
-    } > "$BREWFILE"
-    
+      command grep -E "^(tap|cask)" "$TEMP_BREWFILE"
+
+      command grep "^brew " "$TEMP_BREWFILE" | while read -r line; do
+        local pkg=$(echo "$line" | cut -d '"' -f 2)
+        if [[ " $LEAVES " == *" $pkg "* ]]; then
+          echo "$line"
+        fi
+      done
+    } >"$BREWFILE"
+
     rm "$TEMP_BREWFILE"
     echo "✅ Brewfile updated at $BREWFILE"
   fi
-  
+
   return $EXIT_CODE
 }
 
@@ -107,7 +108,8 @@ se() {
   done
 
   if [[ ${#files[@]} -eq 0 ]]; then
-    exec "$@"
+    "$@"
+    return $?
   fi
 
   (
@@ -131,32 +133,29 @@ se() {
     done
 
     case "$1" in
-        kubectl|k9s)
-            local cmd="$1"
-            shift
-            local K8S_TOKEN=$(yc k8s create-token --token "$YC_TOKEN" 2>/dev/null | jq -r '.status.token')
+      kubectl | k9s)
+        local cmd="$1"
+        shift
+        local K8S_TOKEN=$(yc k8s create-token --token "$YC_TOKEN" 2>/dev/null | jq -r '.status.token')
 
-            if [[ -n "$K8S_TOKEN" && "$K8S_TOKEN" != "null" ]]; then
-                exec "$cmd" --token="$K8S_TOKEN" "$@"
-            else
-                echo "ERROR: Failed to extract k8s token. Check if YC_TOKEN is valid." >&2
-                exit 1
-            fi
-            ;;
-
-        yc)
-            local cmd="$1"
-            shift
-            local -a extra_args=("--token" "$YC_TOKEN")
-            [[ -n "$YC_CLOUD_ID" ]]  && extra_args+=("--cloud-id" "$YC_CLOUD_ID")
-            [[ -n "$YC_FOLDER_ID" ]] && extra_args+=("--folder-id" "$YC_FOLDER_ID")
-
-            exec "$cmd" "${extra_args[@]}" "$@"
-            ;;
-
-        *)
-            exec "$@"
-            ;;
+        if [[ -n "$K8S_TOKEN" && "$K8S_TOKEN" != "null" ]]; then
+          exec "$cmd" --token="$K8S_TOKEN" "$@"
+        else
+          echo "ERROR: Failed to extract k8s token. Check if YC_TOKEN is valid." >&2
+          exit 1
+        fi
+        ;;
+      yc)
+        local cmd="$1"
+        shift
+        local -a extra_args=("--token" "$YC_TOKEN")
+        [[ -n "$YC_CLOUD_ID" ]] && extra_args+=("--cloud-id" "$YC_CLOUD_ID")
+        [[ -n "$YC_FOLDER_ID" ]] && extra_args+=("--folder-id" "$YC_FOLDER_ID")
+        exec "$cmd" "${extra_args[@]}" "$@"
+        ;;
+      *)
+        exec "$@"
+        ;;
     esac
   )
 }
