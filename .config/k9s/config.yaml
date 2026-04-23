@@ -1,29 +1,16 @@
 k9s:
+  liveViewAutoRefresh: true
+  portForwardAddress: localhost
   ui:
     skin: one-dark
+    enableMouse: false
     headless: true
     logoless: true
     crumbsless: true
+    splashless: true
+    noIcons: true
     defaultsToFullScreen: true
   skipLatestRevCheck: true
-  disablePodCounting: true
-  shellPod:
-    image: alpine
-    namespace: default
-    limits:
-      cpu: 100m
-      memory: 100Mi
-  imageScans:
-    enable: false
-    exclusions:
-      namespaces: []
-      labels: {}
-  logger:
-    tail: 100
-    buffer: 5000
-    sinceSeconds: -1
-    textWrap: false
-    showTime: false
   thresholds:
     cpu:
       critical: 90
@@ -31,3 +18,4 @@ k9s:
     memory:
       critical: 90
       warn: 80
+  defaultView: "nodes"

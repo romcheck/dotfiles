@@ -32,3 +32,7 @@
 *.tmp
 *.log
 *.bak
+
+# private variables
+.secrets.yaml
+.vars.yaml

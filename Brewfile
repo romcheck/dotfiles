@@ -1,5 +1,4 @@
 tap "chojs23/ec"
-cask "clickhouse"
 cask "ilya-birman-typography-layout"
 cask "openvpn-connect"
 cask "wezterm"

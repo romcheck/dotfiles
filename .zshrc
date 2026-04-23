@@ -18,10 +18,6 @@ export AWS_REGION=eu-central-1
 alias cn="tr -d '\n' | pbcopy"
 alias c=pbcopy
 alias ls=eza
-alias grep=rg
-alias vi=hx
-alias vim=hx
-alias x=hx
 alias v="vifm ."
 alias cat="bat -pp"
 
@@ -89,7 +85,7 @@ brew() {
           echo "$line"
         fi
       done
-    } >"$BREWFILE"
+    } > "$BREWFILE"
 
     rm "$TEMP_BREWFILE"
     echo "✅ Brewfile updated at $BREWFILE"
@@ -98,12 +94,16 @@ brew() {
   return $EXIT_CODE
 }
 
+# --- secret enclave: hierarchical environment injector for secure cli tooling ---
 se() {
   local d="$PWD"
   local files=()
 
+  # collect configuration files up the directory tree
   while [[ "$d" != "/" && "$d" != "$HOME/.." ]]; do
-    [[ -f "$d/secrets.yaml" ]] && files=("$d/secrets.yaml" "${files[@]}")
+    # secrets are added after vars to ensure they take precedence during export
+    [[ -f "$d/.vars.yaml" ]] && files=("$d/.vars.yaml" "${files[@]}")
+    [[ -f "$d/.secrets.yaml" ]] && files=("$d/.secrets.yaml" "${files[@]}")
     d="${d:h}"
   done
 
@@ -114,44 +114,55 @@ se() {
 
   (
     set +x
-
-    trap 'echo "\n❌ Decryption interrupted. Aborting." >&2; exit 1' INT
+    trap 'echo "\n❌ Interrupted." >&2; exit 1' INT
 
     for f in "${files[@]}"; do
-      echo "🔓 Layering: $f" >&2
-
-      while IFS= read -r line; do
-        if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then
-          export "${line}"
+      if [[ "$f:t" == ".vars.yaml" ]]; then
+        echo "📖 Loading variables: $f" >&2
+        # parse plain yaml via yq
+        local vars=$(yq e '. | to_entries | .[] | .key + "=" + (.value | @sh)' "$f" 2> /dev/null)
+        if [[ -n "$vars" ]]; then
+          while IFS= read -r line; do
+            export "${(z)line}"
+          done <<< "$vars"
         fi
-      done < <(sops -d --output-type dotenv "$f" 2>/dev/null)
+      else
+        echo "🔓 Decrypting secret variables: $f" >&2
+        # read encrypted secrets via sops
+        while IFS= read -r line; do
+          if [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; then
+            export "${line}"
+          fi
+        done < <(sops -d --output-type dotenv "$f" 2> /dev/null)
 
-      if [[ $? -ne 0 ]]; then
-        echo "❌ Error decrypting $f. Execution halted." >&2
-        exit 1
+        if [[ $? -ne 0 ]]; then
+          echo "❌ Error decrypting $f. Execution halted." >&2
+          exit 1
+        fi
       fi
     done
 
+    # execute specific commands with token/argument injection
     case "$1" in
       kubectl | k9s)
-        local cmd="$1"
+        local cmd=$1
         shift
-        local K8S_TOKEN=$(yc k8s create-token --token "$YC_TOKEN" 2>/dev/null | jq -r '.status.token')
+        local K8S_TOKEN=$(yc k8s create-token --token "$YC_TOKEN" 2> /dev/null | jq -r '.status.token')
 
         if [[ -n "$K8S_TOKEN" && "$K8S_TOKEN" != "null" ]]; then
           exec "$cmd" --token="$K8S_TOKEN" "$@"
         else
-          echo "ERROR: Failed to extract k8s token. Check if YC_TOKEN is valid." >&2
+          echo "❌ ERROR: Failed to extract k8s token. Check if YC_TOKEN is valid." >&2
           exit 1
         fi
         ;;
       yc)
-        local cmd="$1"
+        local cmd=$1
         shift
-        local -a extra_args=("--token" "$YC_TOKEN")
-        [[ -n "$YC_CLOUD_ID" ]] && extra_args+=("--cloud-id" "$YC_CLOUD_ID")
-        [[ -n "$YC_FOLDER_ID" ]] && extra_args+=("--folder-id" "$YC_FOLDER_ID")
-        exec "$cmd" "${extra_args[@]}" "$@"
+        local -a args=("--token" "$YC_TOKEN")
+        [[ -n "$YC_CLOUD_ID" ]] && args+=("--cloud-id" "$YC_CLOUD_ID")
+        [[ -n "$YC_FOLDER_ID" ]] && args+=("--folder-id" "$YC_FOLDER_ID")
+        exec "$cmd" "${args[@]}" "$@"
         ;;
       *)
         exec "$@"
