@@ -10,6 +10,7 @@ k9s:
     splashless: true
     noIcons: true
     defaultsToFullScreen: true
+    reactive: true
   skipLatestRevCheck: true
   thresholds:
     cpu:

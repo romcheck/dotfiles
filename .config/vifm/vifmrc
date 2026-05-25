@@ -22,7 +22,7 @@ colorscheme onedark
 filetype {*.pdf,*.jpg,*.jpeg,*.png} open -a preview.app
 filetype {*.doc,*.docx,*.pages} open -a Pages\ Creator\ Studio
 filetype {*.xls,*.xlsx,*.numbers} open -a Numbers\ Creator\ Studio
-filetype {*.mkv,*.mov} open -a Vlc.app
+filetype {*.mkv,*.mov} open -a iina.app
 
 nnoremap I cw<c-a>
 nnoremap cc cw<c-u>

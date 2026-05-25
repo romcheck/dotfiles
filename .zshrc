@@ -2,7 +2,7 @@
 # shellcheck disable=SC1009,SC1036,SC1058,SC1072,SC1073
 
 # path
-PATH="$HOME/go/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
+PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/bin:$HOME/go/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
 
 # env variables
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -142,26 +142,15 @@ se() {
       fi
     done
 
-    # execute specific commands with token/argument injection
+    # execute specific commands with args injection
     case "$1" in
-      kubectl | k9s)
-        local cmd=$1
-        shift
-        local K8S_TOKEN=$(yc k8s create-token --token "$YC_TOKEN" 2> /dev/null | jq -r '.status.token')
-
-        if [[ -n "$K8S_TOKEN" && "$K8S_TOKEN" != "null" ]]; then
-          exec "$cmd" --token="$K8S_TOKEN" "$@"
-        else
-          echo "❌ ERROR: Failed to extract k8s token. Check if YC_TOKEN is valid." >&2
-          exit 1
-        fi
-        ;;
       yc)
         local cmd=$1
         shift
         local -a args=("--token" "$YC_TOKEN")
         [[ -n "$YC_CLOUD_ID" ]] && args+=("--cloud-id" "$YC_CLOUD_ID")
         [[ -n "$YC_FOLDER_ID" ]] && args+=("--folder-id" "$YC_FOLDER_ID")
+        [[ -n "$YC_ENDPOINT" ]] && args+=("--endpoint" "$YC_ENDPOINT")
         exec "$cmd" "${args[@]}" "$@"
         ;;
       *)
