@@ -43,6 +43,9 @@ fi
 # prompt
 eval "$(starship init zsh)"
 
+# mise
+eval "$(mise activate zsh)"
+
 # disable zsh history
 HISTFILE=/dev/null
 HISTSIZE=0

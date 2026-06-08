@@ -1,0 +1,5 @@
+[tools]
+pulumi = "3.244.0"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node", "terraform"]

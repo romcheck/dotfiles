@@ -3,7 +3,6 @@ k9s:
   portForwardAddress: localhost
   ui:
     skin: one-dark
-    enableMouse: false
     headless: true
     logoless: true
     crumbsless: true
@@ -19,4 +18,3 @@ k9s:
     memory:
       critical: 90
       warn: 80
-  defaultView: "nodes"
