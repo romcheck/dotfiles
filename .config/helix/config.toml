@@ -1,6 +1,4 @@
 theme = "penumbra+"
-# theme = "onelight"
-# theme = "alabaster"
 
 [editor]
 bufferline = "multiple"

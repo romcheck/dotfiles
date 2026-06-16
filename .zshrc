@@ -2,7 +2,7 @@
 # shellcheck disable=SC1009,SC1036,SC1058,SC1072,SC1073
 
 # path
-PATH="${KREW_ROOT:-$HOME/.krew}/bin:$HOME/bin:$HOME/go/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$HOME/.nodenv/shims:$PATH"
+PATH="$HOME/bin:$HOME/go/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$PATH"
 
 # env variables
 export XDG_CONFIG_HOME="$HOME/.config"
