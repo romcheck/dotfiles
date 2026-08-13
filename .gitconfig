@@ -35,5 +35,3 @@
 
 [include]
     path = ~/icloud/.gitconfig
-[url "ssh://git@src.z-it.ru:2222/"]
-	insteadOf = https://src.z-it.ru/

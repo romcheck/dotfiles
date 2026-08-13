@@ -10,7 +10,6 @@ set nofollowlinks
 only
 
 mark h ~/
-mark z ~/.config/vifm vifmrc
 mark d ~/Downloads
 mark D ~/Documents
 mark i ~/icloud

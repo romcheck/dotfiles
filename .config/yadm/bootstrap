@@ -11,10 +11,10 @@ ICLOUD_ORIGINAL="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 ICLOUD_LINK="$HOME/icloud"
 
 if [ ! -L "$ICLOUD_LINK" ]; then
-    echo "🔗 Creating iCloud symlink..."
-    ln -s "$ICLOUD_ORIGINAL" "$ICLOUD_LINK"
+  echo "🔗 Creating iCloud symlink..."
+  ln -s "$ICLOUD_ORIGINAL" "$ICLOUD_LINK"
 else
-    echo "✅ iCloud symlink already exists."
+  echo "✅ iCloud symlink already exists."
 fi
 
 # --- Keychain & SSH Integration ---
@@ -22,32 +22,31 @@ echo "🔍 Verifying cloud paths..."
 SSH_KEY="$ICLOUD_LINK/.id_rsa"
 
 if [ ! -f "$SSH_KEY" ]; then
-    echo "❌ Error: SSH Key not found at $SSH_KEY"
-    exit 1
+  echo "❌ Error: SSH Key not found at $SSH_KEY"
+  exit 1
 fi
 
 echo "🔑 Adding SSH key to agent..."
 ssh-add --apple-use-keychain "$SSH_KEY"
 
-
 # --- Homebrew Installation ---
-if ! command -v brew >/dev/null 2>&1; then
-    echo "🍺 Homebrew not found. Installing via official .pkg..."
-    
-    INSTALLER_URL="https://github.com/Homebrew/brew/releases/latest/download/Homebrew.pkg"
-    PKG_PATH="/tmp/Homebrew.pkg"
-    
-    curl -L "$INSTALLER_URL" -o "$PKG_PATH"
-    
-    echo "🔐 Please enter your password for Homebrew installation:"
-    sudo installer -pkg "$PKG_PATH" -target /
-    rm "$PKG_PATH"
+if ! command -v brew > /dev/null 2>&1; then
+  echo "🍺 Homebrew not found. Installing via official .pkg..."
 
-    # Set up shell environment for current session (Apple Silicon)
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    echo "✅ Homebrew installed."
+  INSTALLER_URL="https://github.com/Homebrew/brew/releases/latest/download/Homebrew.pkg"
+  PKG_PATH="/tmp/Homebrew.pkg"
+
+  curl -L "$INSTALLER_URL" -o "$PKG_PATH"
+
+  echo "🔐 Please enter your password for Homebrew installation:"
+  sudo installer -pkg "$PKG_PATH" -target /
+  rm "$PKG_PATH"
+
+  # Set up shell environment for current session (Apple Silicon)
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  echo "✅ Homebrew installed."
 else
-    echo "✅ Homebrew is already installed."
+  echo "✅ Homebrew is already installed."
 fi
 
 # --- macOS System Settings (defaults) ---
@@ -77,24 +76,24 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 15
 defaults write -g com.apple.keyboard.modifiermapping.1452-630-0 -array '<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer><key>HIDKeyboardModifierMappingSrc</key><integer>30064771129</integer></dict>'
 
 # --- Homebrew Permissions & Bundle ---
-if command -v brew >/dev/null 2>&1; then
-    BREW_SHARE="$(brew --prefix)/share"
+if command -v brew > /dev/null 2>&1; then
+  BREW_SHARE="$(brew --prefix)/share"
 
-    # Check if 'group' or 'others' have write access (the BSD way)
-    # stat -f %Lp returns permissions in octal (e.g., 775)
-    # We check if the last two digits are greater than 5 (meaning 6 or 7, which is write access)
-    PERMS=$(stat -f "%Lp" "$BREW_SHARE")
-    if [[ "$PERMS" =~ [0-9][6-7][0-9] ]] || [[ "$PERMS" =~ [0-9][0-9][6-7] ]]; then
-        echo "🛡️  Securing Homebrew permissions..."
-        sudo chmod -R go-w "$BREW_SHARE"
-    else
-        echo "✅ Homebrew permissions are already secure ($PERMS)."
-    fi
+  # Check if 'group' or 'others' have write access (the BSD way)
+  # stat -f %Lp returns permissions in octal (e.g., 775)
+  # We check if the last two digits are greater than 5 (meaning 6 or 7, which is write access)
+  PERMS=$(stat -f "%Lp" "$BREW_SHARE")
+  if [[ "$PERMS" =~ [0-9][6-7][0-9] ]] || [[ "$PERMS" =~ [0-9][0-9][6-7] ]]; then
+    echo "🛡️  Securing Homebrew permissions..."
+    sudo chmod -R go-w "$BREW_SHARE"
+  else
+    echo "✅ Homebrew permissions are already secure ($PERMS)."
+  fi
 
-    if [ -f "$HOME/Brewfile" ]; then
-        echo "📦 Installing software from Brewfile..."
-        brew bundle --file="$HOME/Brewfile"
-    fi
+  if [ -f "$HOME/Brewfile" ]; then
+    echo "📦 Installing software from Brewfile..."
+    brew bundle --file="$HOME/Brewfile"
+  fi
 fi
 
 # --- Path to the PAM sudo configuration ---
@@ -103,17 +102,17 @@ TOUCHID_LINE="auth       sufficient     pam_tid.so"
 
 # Check if the line already exists to avoid duplicates
 if ! grep -q "pam_tid.so" "$PAM_FILE"; then
-    echo "Enabling Touch ID for sudo..."
+  echo "Enabling Touch ID for sudo..."
 
-    # Use sed to insert the line at the top (after the first line comment)
-    # This requires sudo because /etc/pam.d/ is system-protected
-    sudo sed -i '' "2i\\
+  # Use sed to insert the line at the top (after the first line comment)
+  # This requires sudo because /etc/pam.d/ is system-protected
+  sudo sed -i '' "2i\\
 $TOUCHID_LINE
 " "$PAM_FILE"
 
-    echo "Touch ID enabled successfully."
+  echo "Touch ID enabled successfully."
 else
-    echo "Touch ID for sudo is already configured."
+  echo "Touch ID for sudo is already configured."
 fi
 
 # --- Fix sops completion ---
@@ -121,7 +120,7 @@ CORRECT_COMPLETION="$HOME/.config/yadm/files/_sops"
 BREW_COMPLETION="$HOMEBREW_PREFIX/share/zsh/site-functions/_sops"
 
 if [ -f "$CORRECT_COMPLETION" ]; then
-cp "$CORRECT_COMPLETION" "$BREW_COMPLETION"
+  cp "$CORRECT_COMPLETION" "$BREW_COMPLETION"
 fi
 
 # --- Finalization ---

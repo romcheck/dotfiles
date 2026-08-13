@@ -10,14 +10,17 @@ export BAT_THEME=base16-256
 export EDITOR=hx
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
 export KUBECONFIG="$HOME/icloud/.kubeconfig"
+export GOPROXY=pkg-proxy.yasno.dev/go,direct
 
 # default S3 region
 export AWS_REGION=eu-central-1
 
 # aliases
 alias cn="tr -d '\n' | pbcopy"
-alias c=pbcopy
+alias c="perl -pe 'chomp if eof' | pbcopy"
 alias ls=eza
+alias h=hx
+alias x=hx
 alias v="vifm ."
 alias cat="bat -pp"
 
@@ -40,11 +43,12 @@ else
   compinit -C
 fi
 
-# prompt
-eval "$(starship init zsh)"
-
 # mise
 eval "$(mise activate zsh)"
+
+# prompt
+export STARSHIP_CONFIG=~/.config/starship-zsh.toml
+eval "$(starship init zsh)"
 
 # disable zsh history
 HISTFILE=/dev/null

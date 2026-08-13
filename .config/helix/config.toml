@@ -2,7 +2,6 @@ theme = "penumbra+"
 
 [editor]
 bufferline = "multiple"
-# insert-final-newline = false
 
 [editor.soft-wrap]
 enable = true
@@ -14,7 +13,14 @@ hidden = false
 min-width = 1
 
 [editor.statusline]
-left = ["mode", "spinner", "file-absolute-path", "read-only-indicator", "file-modification-indicator"]
+left = ["file-absolute-path", "file-modification-indicator"]
+center = []
+right = []
 
 [keys.normal]
-q = ":xa"
+q = ":x"
+d = ["delete_selection_noyank"]
+
+[keys.normal.space]
+q = ":write-buffer-close"
+x = ":toggle whitespace.render all none"
