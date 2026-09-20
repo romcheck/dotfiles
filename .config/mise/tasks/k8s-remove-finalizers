@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#MISE description="Remove finalizers from all namespaced resources in a Kubernetes API group"
+#USAGE arg "<api-group>" help="Kubernetes API group, e.g. example.com"
+#USAGE arg "<namespace>" help="Kubernetes namespace"
+#USAGE flag "-y --yes" help="Skip confirmation"
+#USAGE flag "--dry-run" help="Show resources without modifying them"
+
+API_GROUP="${usage_api_group?}"
+NAMESPACE="${usage_namespace?}"
+DRY_RUN="${usage_dry_run:-false}"
+
+if ! command -v kubectl > /dev/null 2>&1; then
+  echo "error: kubectl is not installed or not in PATH" >&2
+  exit 1
+fi
+
+if ! kubectl auth can-i list --api-groups="$API_GROUP" --all-namespaces > /dev/null 2>&1; then
+  echo "error: cannot list resources in API group '$API_GROUP'" >&2
+  exit 1
+fi
+
+if [[ "${usage_yes:-false}" != "true" && "$DRY_RUN" != "true" ]]; then
+  cat >&2 << EOF
+WARNING: this will remove metadata.finalizers from ALL namespaced
+resources in API group '$API_GROUP' in namespace '$NAMESPACE'.
+
+This is a destructive operation and may bypass normal resource cleanup.
+
+EOF
+
+  read -r -p "Continue? [y/N] " answer
+
+  if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+    echo "Aborted."
+    exit 0
+  fi
+fi
+
+resources="$(
+  kubectl api-resources \
+    --api-group="$API_GROUP" \
+    --namespaced=true \
+    --verbs=list \
+    -o name
+)"
+
+if [[ -z "$resources" ]]; then
+  echo "No listable namespaced resources found in API group '$API_GROUP'."
+  exit 0
+fi
+
+found=0
+
+while IFS= read -r resource; do
+  [[ -z "$resource" ]] && continue
+
+  while IFS= read -r object; do
+    [[ -z "$object" ]] && continue
+
+    found=1
+    echo "Removing finalizers from $object"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+      continue
+    fi
+
+    kubectl patch "$object" \
+      --namespace="$NAMESPACE" \
+      --type=json \
+      --patch='[{"op":"remove","path":"/metadata/finalizers"}]'
+  done < <(
+    kubectl get "$resource" \
+      --namespace="$NAMESPACE" \
+      --ignore-not-found \
+      -o name
+  )
+done <<< "$resources"
+
+if [[ "$found" == "0" ]]; then
+  echo "No resources found in namespace '$NAMESPACE'."
+fi

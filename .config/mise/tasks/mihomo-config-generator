@@ -1,0 +1,383 @@
+#!/usr/bin/env bash
+
+#MISE description="Generate Mihomo configs: VLESS + Reality, Hysteria2 and TUIC"
+#MISE dir="{{cwd}}"
+#USAGE arg "<server_host>" help="Server hostname or IP address"
+
+set -euo pipefail
+
+SERVER_HOST="${usage_server_host?}"
+OUTPUT_DIR="$PWD"
+
+MIHOMO_BIN="${MIHOMO_BIN:-mihomo}"
+
+VLESS_PORT="4443"
+HY2_PORT="8443"
+TUIC_PORT="7443"
+
+REALITY_DEST="yandex.ru:443"
+REALITY_SERVER_NAME="yandex.ru"
+
+UUID_FILE="$OUTPUT_DIR/uuid"
+PASSWORD_FILE="$OUTPUT_DIR/password"
+
+REALITY_PRIVATE_KEY_FILE="$OUTPUT_DIR/reality-private-key"
+REALITY_PUBLIC_KEY_FILE="$OUTPUT_DIR/reality-public-key"
+REALITY_SHORT_ID_FILE="$OUTPUT_DIR/reality-short-id"
+
+CERT_FILE="$OUTPUT_DIR/hysteria2.crt"
+KEY_FILE="$OUTPUT_DIR/hysteria2.key"
+
+SERVER_CONFIG="$OUTPUT_DIR/server.yaml"
+CLIENT_CONFIG="$OUTPUT_DIR/client.yaml"
+
+log() {
+  printf '[*] %s\n' "$*"
+}
+
+success() {
+  printf '[+] %s\n' "$*"
+}
+
+warn() {
+  printf '[!] %s\n' "$*" >&2
+}
+
+die() {
+  printf '[x] %s\n' "$*" >&2
+  exit 1
+}
+
+require_command() {
+  command -v "$1" > /dev/null 2>&1 || die "Required command not found: $1"
+}
+
+is_ipv4() {
+  local value="$1"
+  [[ "$value" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]
+}
+
+generate_uuid() {
+  if command -v uuidgen > /dev/null 2>&1; then
+    uuidgen
+    return
+  fi
+
+  "$MIHOMO_BIN" generate uuid
+}
+
+generate_password() {
+  openssl rand -hex 32
+}
+
+generate_short_id() {
+  openssl rand -hex 8
+}
+
+validate_uuid() {
+  [[ "$1" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$ ]]
+}
+
+validate_short_id() {
+  [[ "$1" =~ ^[0-9a-fA-F]{16}$ ]]
+}
+
+load_or_generate_uuid() {
+  if [[ -s "$UUID_FILE" ]]; then
+    UUID="$(tr -d '[:space:]' < "$UUID_FILE")"
+
+    if ! validate_uuid "$UUID"; then
+      warn "Invalid UUID in $UUID_FILE, generating a new one"
+      UUID="$(generate_uuid)"
+      printf '%s\n' "$UUID" > "$UUID_FILE"
+    fi
+  else
+    UUID="$(generate_uuid)"
+    printf '%s\n' "$UUID" > "$UUID_FILE"
+  fi
+}
+
+load_or_generate_password() {
+  if [[ -s "$PASSWORD_FILE" ]]; then
+    PASSWORD="$(tr -d '\r\n' < "$PASSWORD_FILE")"
+
+    [[ -n "$PASSWORD" ]] || die "Password file is empty: $PASSWORD_FILE"
+  else
+    PASSWORD="$(generate_password)"
+    printf '%s\n' "$PASSWORD" > "$PASSWORD_FILE"
+  fi
+}
+
+load_or_generate_reality_keys() {
+  if [[ -s "$REALITY_PRIVATE_KEY_FILE" && -s "$REALITY_PUBLIC_KEY_FILE" ]]; then
+    REALITY_PRIVATE_KEY="$(tr -d '[:space:]' < "$REALITY_PRIVATE_KEY_FILE")"
+    REALITY_PUBLIC_KEY="$(tr -d '[:space:]' < "$REALITY_PUBLIC_KEY_FILE")"
+  else
+    log "Generating Reality keypair..."
+
+    local reality_output
+
+    reality_output="$("$MIHOMO_BIN" generate reality-keypair)"
+
+    REALITY_PRIVATE_KEY="$(awk -F': ' '/PrivateKey:/ {print $2}' <<< "$reality_output")"
+    REALITY_PUBLIC_KEY="$(awk -F': ' '/PublicKey:/ {print $2}' <<< "$reality_output")"
+
+    [[ -n "$REALITY_PRIVATE_KEY" ]] || die "Failed to extract Reality private key"
+    [[ -n "$REALITY_PUBLIC_KEY" ]] || die "Failed to extract Reality public key"
+
+    printf '%s\n' "$REALITY_PRIVATE_KEY" > "$REALITY_PRIVATE_KEY_FILE"
+    printf '%s\n' "$REALITY_PUBLIC_KEY" > "$REALITY_PUBLIC_KEY_FILE"
+  fi
+
+  [[ -n "$REALITY_PRIVATE_KEY" ]] || die "Reality private key is empty"
+  [[ -n "$REALITY_PUBLIC_KEY" ]] || die "Reality public key is empty"
+}
+
+load_or_generate_reality_short_id() {
+  if [[ -s "$REALITY_SHORT_ID_FILE" ]]; then
+    REALITY_SHORT_ID="$(tr -d '[:space:]' < "$REALITY_SHORT_ID_FILE")"
+
+    if ! validate_short_id "$REALITY_SHORT_ID"; then
+      warn "Invalid Reality short-id in $REALITY_SHORT_ID_FILE, generating a new one"
+      REALITY_SHORT_ID="$(generate_short_id)"
+      printf '%s\n' "$REALITY_SHORT_ID" > "$REALITY_SHORT_ID_FILE"
+    fi
+  else
+    REALITY_SHORT_ID="$(generate_short_id)"
+    printf '%s\n' "$REALITY_SHORT_ID" > "$REALITY_SHORT_ID_FILE"
+  fi
+}
+
+certificate_is_valid() {
+  [[ -s "$CERT_FILE" && -s "$KEY_FILE" ]] || return 1
+
+  openssl x509 \
+    -in "$CERT_FILE" \
+    -noout \
+    > /dev/null 2>&1 || return 1
+
+  openssl x509 \
+    -in "$CERT_FILE" \
+    -pubkey \
+    -noout \
+    2> /dev/null \
+    | openssl pkey -pubin -outform pem 2> /dev/null \
+    | cmp -s - \
+      <(
+        openssl pkey \
+          -in "$KEY_FILE" \
+          -pubout \
+          -outform pem \
+          2> /dev/null
+      )
+}
+
+generate_certificate() {
+  log "Generating self-signed certificate..."
+
+  local san_type="DNS"
+
+  if is_ipv4 "$SERVER_HOST"; then
+    san_type="IP"
+  fi
+
+  openssl req \
+    -x509 \
+    -newkey ed25519 \
+    -nodes \
+    -days 3650 \
+    -keyout "$KEY_FILE" \
+    -out "$CERT_FILE" \
+    -subj "/CN=$SERVER_HOST" \
+    -addext "subjectAltName=$san_type:$SERVER_HOST" \
+    > /dev/null 2>&1
+}
+
+load_or_generate_certificate() {
+  if certificate_is_valid; then
+    log "Using existing certificate and private key"
+  else
+    warn "Existing Hysteria2/TUIC certificate is missing or invalid"
+    generate_certificate
+  fi
+}
+
+require_command "$MIHOMO_BIN"
+require_command openssl
+
+[[ -n "$SERVER_HOST" ]] || die "SERVER_HOST is empty"
+
+log "Server host: $SERVER_HOST"
+
+load_or_generate_uuid
+load_or_generate_password
+load_or_generate_reality_keys
+load_or_generate_reality_short_id
+load_or_generate_certificate
+
+cat > "$SERVER_CONFIG" << EOF
+mode: direct
+
+listeners:
+  - name: vless-listener
+    type: vless
+    listen: 0.0.0.0
+    port: $VLESS_PORT
+    udp: true
+    users:
+      - uuid: $UUID
+        flow: xtls-rprx-vision
+    reality-config:
+      dest: $REALITY_DEST
+      short-id:
+        - $REALITY_SHORT_ID
+      server-names:
+        - $REALITY_SERVER_NAME
+      private-key: $REALITY_PRIVATE_KEY
+
+  - name: hysteria2-listener
+    type: hysteria2
+    listen: 0.0.0.0
+    port: $HY2_PORT
+    users:
+      $UUID: $PASSWORD
+    alpn:
+      - h3
+    certificate: ./hysteria2.crt
+    private-key: ./hysteria2.key
+
+  - name: tuic-listener
+    type: tuic
+    listen: 0.0.0.0
+    port: $TUIC_PORT
+    certificate: ./hysteria2.crt
+    private-key: ./hysteria2.key
+    congestion-controller: bbr
+    users:
+      $UUID: $PASSWORD
+    alpn:
+      - h3
+EOF
+
+cat > "$CLIENT_CONFIG" << EOF
+log-level: info
+ipv6: false
+
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 24
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver:
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.google/dns-query
+  fallback:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: true
+  dns-hijack:
+    - any:53
+
+proxies:
+  - name: vless-reality
+    type: vless
+    server: $SERVER_HOST
+    port: $VLESS_PORT
+    uuid: $UUID
+    udp: true
+    network: tcp
+    tls: true
+    servername: $REALITY_SERVER_NAME
+    flow: xtls-rprx-vision
+    reality-opts:
+      public-key: $REALITY_PUBLIC_KEY
+      short-id: $REALITY_SHORT_ID
+    client-fingerprint: chrome
+
+  - name: hysteria2
+    type: hysteria2
+    server: $SERVER_HOST
+    port: $HY2_PORT
+    password: $PASSWORD
+    alpn:
+      - h3
+    sni: $SERVER_HOST
+    skip-cert-verify: true
+
+  - name: tuic
+    type: tuic
+    server: $SERVER_HOST
+    port: $TUIC_PORT
+    uuid: $UUID
+    password: $PASSWORD
+    ip: $SERVER_HOST
+    congestion-controller: bbr
+    udp-relay-mode: native
+    alpn:
+      - h3
+    sni: $SERVER_HOST
+    skip-cert-verify: true
+
+proxy-groups:
+  - name: YOUTUBE
+    type: fallback
+    proxies:
+      - vless-reality
+      - hysteria2
+      - tuic
+    url: https://www.youtube.com/generate_204
+    interval: 300
+    tolerance: 50
+
+  - name: DEFAULT
+    type: fallback
+    proxies:
+      - hysteria2
+      - tuic
+      - DIRECT
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+
+rules:
+  - GEOSITE,youtube,YOUTUBE
+  - MATCH,DEFAULT
+EOF
+
+log "Validating server config..."
+
+(
+  cd "$OUTPUT_DIR"
+  "$MIHOMO_BIN" -t -f "$SERVER_CONFIG"
+)
+
+log "Validating client config..."
+
+"$MIHOMO_BIN" -t -f "$CLIENT_CONFIG"
+
+success "Configs generated successfully"
+
+printf '\n'
+printf '  Server config : %s\n' "$SERVER_CONFIG"
+printf '  Client config : %s\n' "$CLIENT_CONFIG"
+printf '\n'
+printf '  UUID           : %s\n' "$UUID"
+printf '  Password       : %s\n' "$PASSWORD"
+printf '  Reality S-ID   : %s\n' "$REALITY_SHORT_ID"
+printf '  Reality pubkey : %s\n' "$REALITY_PUBLIC_KEY"
+printf '\n'
+printf '  Ports:\n'
+printf '    VLESS       TCP %s\n' "$VLESS_PORT"
+printf '    Hysteria2   UDP %s\n' "$HY2_PORT"
+printf '    TUIC        UDP %s\n' "$TUIC_PORT"
