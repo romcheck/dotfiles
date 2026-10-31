@@ -290,7 +290,7 @@ tun:
     - any:53
 
 proxies:
-  - name: vless-reality
+  - name: vless
     type: vless
     server: $SERVER_HOST
     port: $VLESS_PORT
@@ -333,7 +333,7 @@ proxy-groups:
   - name: YOUTUBE
     type: fallback
     proxies:
-      - vless-reality
+      - vless
       - hysteria2
       - tuic
     url: https://www.youtube.com/generate_204

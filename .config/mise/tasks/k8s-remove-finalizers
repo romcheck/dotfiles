@@ -1,35 +1,179 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#MISE description="Remove finalizers from all namespaced resources in a Kubernetes API group"
-#USAGE arg "<api-group>" help="Kubernetes API group, e.g. example.com"
+#MISE description="Remove finalizers from all objects of selected Kubernetes Kinds"
 #USAGE arg "<namespace>" help="Kubernetes namespace"
+#USAGE flag "-k --kind <kind>" help="Kubernetes Kind to process; may be repeated" {
+#USAGE   var #true
+#USAGE }
+#USAGE flag "-g --api-group <api-group>" help="Limit Kind lookup to this Kubernetes API group"
 #USAGE flag "-y --yes" help="Skip confirmation"
 #USAGE flag "--dry-run" help="Show resources without modifying them"
 
-API_GROUP="${usage_api_group?}"
-NAMESPACE="${usage_namespace?}"
+NAMESPACE="${usage_namespace:?}"
+API_GROUP="${usage_api_group:-}"
 DRY_RUN="${usage_dry_run:-false}"
+
+# mise exposes variadic values as a shell-escaped string.
+KIND_ARGS="${usage_kind:-}"
+KINDS=()
+
+if [[ -n "$KIND_ARGS" ]]; then
+  eval "KINDS=($KIND_ARGS)"
+fi
+
+if [[ "${#KINDS[@]}" -eq 0 ]]; then
+  echo "error: at least one --kind is required" >&2
+  exit 1
+fi
 
 if ! command -v kubectl > /dev/null 2>&1; then
   echo "error: kubectl is not installed or not in PATH" >&2
   exit 1
 fi
 
-if ! kubectl auth can-i list --api-groups="$API_GROUP" --all-namespaces > /dev/null 2>&1; then
-  echo "error: cannot list resources in API group '$API_GROUP'" >&2
+if ! kubectl get namespace "$NAMESPACE" > /dev/null 2>&1; then
+  echo "error: cannot access namespace '$NAMESPACE'" >&2
   exit 1
 fi
 
+RESOURCES=()
+
+api_resources_args=(
+  --namespaced=true
+  --verbs=list
+  -o wide
+  --no-headers
+)
+
+if [[ -n "$API_GROUP" ]]; then
+  api_resources_args+=(--api-group="$API_GROUP")
+fi
+
+#
+# Find resource names by Kind.
+#
+# Do NOT parse fixed columns with:
+#
+#   read resource shortnames api_version namespaced kind verbs
+#
+# because SHORTNAMES may be empty.
+#
+while IFS= read -r line; do
+  [[ -z "$line" ]] && continue
+
+  for wanted_kind in "${KINDS[@]}"; do
+    #
+    # Match Kind as a complete whitespace-delimited token.
+    #
+    if ! printf '%s\n' "$line" \
+      | grep -Eq "[[:space:]]${wanted_kind}[[:space:]]"; then
+      continue
+    fi
+
+    #
+    # First token is always the resource name.
+    #
+    resource="$(
+      printf '%s\n' "$line" \
+        | sed -E 's/^[[:space:]]*([^[:space:]]+).*/\1/'
+    )"
+
+    [[ -z "$resource" ]] && continue
+
+    #
+    # When API group is explicitly specified, qualify the resource.
+    # Example:
+    #
+    #   Binding -> bindings.rabbitmq.com
+    #
+    if [[ -n "$API_GROUP" ]]; then
+      resource_ref="${resource}.${API_GROUP}"
+    else
+      #
+      # Otherwise find the group/version token, if present.
+      #
+      api_version="$(
+        printf '%s\n' "$line" \
+          | awk '{
+            for (i = 1; i <= NF; i++) {
+              if ($i ~ /\//) {
+                print $i
+                exit
+              }
+            }
+          }'
+      )"
+
+      if [[ "$api_version" == */* ]]; then
+        group="${api_version%%/*}"
+        resource_ref="${resource}.${group}"
+      else
+        # Core API resource, e.g. pods, services, configmaps.
+        resource_ref="$resource"
+      fi
+    fi
+
+    already_added=0
+
+    for existing in "${RESOURCES[@]}"; do
+      if [[ "$existing" == "$resource_ref" ]]; then
+        already_added=1
+        break
+      fi
+    done
+
+    if [[ "$already_added" == "0" ]]; then
+      RESOURCES+=("$resource_ref")
+    fi
+
+    break
+  done
+done < <(
+  kubectl api-resources "${api_resources_args[@]}"
+)
+
+if [[ "${#RESOURCES[@]}" -eq 0 ]]; then
+  echo "error: no namespaced listable resources found for requested Kind(s):" >&2
+  printf '  %s\n' "${KINDS[@]}" >&2
+
+  if [[ -n "$API_GROUP" ]]; then
+    echo "API group: $API_GROUP" >&2
+  fi
+
+  exit 1
+fi
+
+#
+# Confirmation.
+#
 if [[ "${usage_yes:-false}" != "true" && "$DRY_RUN" != "true" ]]; then
-  cat >&2 << EOF
-WARNING: this will remove metadata.finalizers from ALL namespaced
-resources in API group '$API_GROUP' in namespace '$NAMESPACE'.
+  cat >&2 << 'WARNING'
+WARNING: this will remove metadata.finalizers from ALL objects
+of the selected Kind(s) in the specified namespace.
 
 This is a destructive operation and may bypass normal resource cleanup.
 
-EOF
+WARNING
 
+  echo "Namespace:" >&2
+  echo "  $NAMESPACE" >&2
+
+  echo >&2
+  echo "Kinds:" >&2
+  printf '  %s\n' "${KINDS[@]}" >&2
+
+  if [[ -n "$API_GROUP" ]]; then
+    echo >&2
+    echo "API group:" >&2
+    echo "  $API_GROUP" >&2
+  fi
+
+  echo >&2
+  echo "Resolved resources:" >&2
+  printf '  %s\n' "${RESOURCES[@]}" >&2
+
+  echo >&2
   read -r -p "Continue? [y/N] " answer
 
   if [[ ! "$answer" =~ ^[Yy]$ ]]; then
@@ -38,46 +182,78 @@ EOF
   fi
 fi
 
-resources="$(
-  kubectl api-resources \
-    --api-group="$API_GROUP" \
-    --namespaced=true \
-    --verbs=list \
-    -o name
-)"
-
-if [[ -z "$resources" ]]; then
-  echo "No listable namespaced resources found in API group '$API_GROUP'."
-  exit 0
-fi
-
 found=0
+failed=0
 
-while IFS= read -r resource; do
-  [[ -z "$resource" ]] && continue
+process_resource() {
+  local resource="$1"
+  local objects
+  local object
+  local finalizers
+
+  #
+  # List all objects of this resource in the namespace.
+  #
+  if ! objects="$(
+    kubectl get "$resource" \
+      --namespace="$NAMESPACE" \
+      --ignore-not-found \
+      -o name
+  )"; then
+    echo "warning: cannot list resource '$resource' in namespace '$NAMESPACE'" >&2
+    failed=$((failed + 1))
+    return
+  fi
+
+  [[ -z "$objects" ]] && return
 
   while IFS= read -r object; do
     [[ -z "$object" ]] && continue
 
+    #
+    # Only touch objects that actually have finalizers.
+    #
+    finalizers="$(
+      kubectl get "$object" \
+        --namespace="$NAMESPACE" \
+        -o jsonpath='{.metadata.finalizers}' \
+        2> /dev/null || true
+    )"
+
+    [[ -z "$finalizers" || "$finalizers" == "[]" ]] && continue
+
     found=1
+
     echo "Removing finalizers from $object"
 
     if [[ "$DRY_RUN" == "true" ]]; then
       continue
     fi
 
-    kubectl patch "$object" \
+    #
+    # Remove ALL finalizers.
+    #
+    if ! kubectl patch "$object" \
       --namespace="$NAMESPACE" \
-      --type=json \
-      --patch='[{"op":"remove","path":"/metadata/finalizers"}]'
-  done < <(
-    kubectl get "$resource" \
-      --namespace="$NAMESPACE" \
-      --ignore-not-found \
-      -o name
-  )
-done <<< "$resources"
+      --type=merge \
+      --patch='{"metadata":{"finalizers":[]}}'; then
+      echo "warning: failed to remove finalizers from $object" >&2
+      failed=$((failed + 1))
+    fi
+  done <<< "$objects"
+}
+
+for resource in "${RESOURCES[@]}"; do
+  process_resource "$resource"
+done
 
 if [[ "$found" == "0" ]]; then
-  echo "No resources found in namespace '$NAMESPACE'."
+  echo "No objects with finalizers found."
+else
+  echo "Done."
+fi
+
+if [[ "$failed" != "0" ]]; then
+  echo "Failed operations: $failed" >&2
+  exit 1
 fi

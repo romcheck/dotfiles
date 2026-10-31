@@ -20,7 +20,7 @@ right = []
 [keys.normal]
 q = ":x"
 d = ["delete_selection_noyank"]
+tab = ":toggle-option whitespace.render all none"
 
 [keys.normal.space]
 q = ":write-buffer-close"
-x = ":toggle whitespace.render all none"

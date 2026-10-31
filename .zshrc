@@ -1,20 +1,6 @@
 #!/bin/zsh
 # shellcheck disable=SC1009,SC1036,SC1058,SC1072,SC1073
 
-# path
-PATH="$HOME/bin:$HOME/go/bin:$HOME/icloud/bin:$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$HOMEBREW_PREFIX/opt/libpq/bin:$PATH"
-
-# env variables
-export XDG_CONFIG_HOME="$HOME/.config"
-export BAT_THEME=base16-256
-export EDITOR=hx
-export K9S_CONFIG_DIR="$HOME/.config/k9s"
-export KUBECONFIG="$HOME/icloud/.kubeconfig"
-export GOPROXY=pkg-proxy.yasno.dev/go,direct
-
-# default S3 region
-export AWS_REGION=eu-central-1
-
 # aliases
 alias cn="tr -d '\n' | pbcopy"
 alias c="perl -pe 'chomp if eof' | pbcopy"
@@ -47,7 +33,6 @@ fi
 eval "$(mise activate zsh)"
 
 # prompt
-export STARSHIP_CONFIG=~/.config/starship-zsh.toml
 eval "$(starship init zsh)"
 
 # disable zsh history

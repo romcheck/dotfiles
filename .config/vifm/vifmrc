@@ -1,4 +1,4 @@
-set vicmd=hx
+set vicmd=/Users/romcheck/.local/share/mise/shims/hx
 set trashdir=~/.Trash
 set incsearch
 set ignorecase
