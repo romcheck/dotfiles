@@ -1,0 +1,138 @@
+# [language-server.tsgo]
+# command = "/usr/bin/env"
+# args = [
+#   "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+#   "tsgo",
+#   "--lsp",
+#   "--stdio",
+# ]
+
+[language-server.typescript-language-server]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "typescript-language-server",
+  "--stdio",
+]
+config = { tsserver = { path = "/Users/romcheck/.local/share/mise/installs/npm-typescript/6.0.3/node_modules/.mise/typescript@6.0.3/node_modules/typescript/lib/tsserver.js" } }
+
+
+[language-server.ty]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "ty",
+  "server",
+]
+
+[language-server.bash-language-server]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "bash-language-server",
+  "start",
+]
+
+[language-server.yaml-language-server]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "yaml-language-server",
+  "--stdio",
+]
+
+[language-server.dockerfile-language-server]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "docker-langserver",
+  "--stdio",
+]
+
+[language-server.lua-language-server]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "lua-language-server",
+]
+
+[language-server.helm-ls]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "helm_ls",
+  "serve",
+]
+
+[language-server.vscode-json-language-server]
+command = "/usr/bin/env"
+args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "vscode-json-language-server",
+  "--stdio",
+]
+
+
+# ---------------------------------------------------------------------------
+# Languages
+# ---------------------------------------------------------------------------
+
+[[language]]
+name = "bash"
+formatter = { command = "/usr/bin/env", args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "shfmt",
+  "-i", "2",
+  "-ci",
+  "-bn",
+  "-sr",
+] }
+auto-format = true
+
+[[language]]
+name = "python"
+language-servers = ["ty"]
+formatter = { command = "/usr/bin/env", args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "ruff",
+  "format",
+  "--stdin-filename", "%{buffer_name}",
+  "-",
+] }
+auto-format = true
+
+[[language]]
+name = "json"
+formatter = { command = "/usr/bin/env", args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "biome",
+  "format",
+  "--stdin-file-path", "%{buffer_name}",
+] }
+auto-format = true
+
+[[language]]
+name = "javascript"
+language-servers = ["typescript-language-server"]
+formatter = { command = "/usr/bin/env", args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "biome",
+  "format",
+  "--stdin-file-path", "%{buffer_name}",
+] }
+auto-format = true
+
+[[language]]
+name = "typescript"
+language-servers = ["typescript-language-server"]
+formatter = { command = "/usr/bin/env", args = [
+  "PATH=/Users/romcheck/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+  "biome",
+  "format",
+  "--stdin-file-path", "%{buffer_name}",
+] }
+auto-format = true
+
+[[language]]
+name = "yaml"
+language-servers = ["yaml-language-server"]

@@ -1,0 +1,15 @@
+hide_header = true
+compact_mode = true
+mouse = true
+terminal_title = false
+detail_wrap = false
+remember_sort = true
+
+[logs]
+fullscreen = true
+[skin]
+name = "one-dark"
+[skin.colors]
+pink = "#61afef"
+mauve = "#61afef"
+lavender = "#61afef"

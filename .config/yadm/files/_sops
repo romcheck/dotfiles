@@ -1,0 +1,10 @@
+#compdef sops
+
+_sops() {
+  local -a opts
+  opts=("${(@f)$(_CLI_ZSH_AUTOCOMPLETE_HACK=1 sops --generate-bash-completion)}")
+  _describe 'values' opts
+  _files
+}
+
+_sops "$@"

@@ -1,0 +1,14 @@
+auto_sync = false
+update_check = false
+enter_accept = true
+[stats]
+[keys]
+[sync]
+records = true
+[preview]
+[daemon]
+[search]
+[tmux]
+[ui]
+[ai]
+enabled = false

@@ -16,16 +16,13 @@ set -euo pipefail
   exit 1
 }
 
-# Apple Silicon Homebrew
 export HOMEBREW_PREFIX="/opt/homebrew"
 export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"
 
 PKG_PATH=""
-FINDER_PREFS_TMP=""
 
 cleanup() {
   [[ -z "${PKG_PATH:-}" ]] || rm -f "$PKG_PATH"
-  [[ -z "${FINDER_PREFS_TMP:-}" ]] || rm -f "$FINDER_PREFS_TMP"
 }
 
 trap cleanup EXIT
@@ -50,7 +47,7 @@ if [[ -L "$ICLOUD_LINK" ]]; then
 
 elif [[ -e "$ICLOUD_LINK" ]]; then
 
-  echo "❌ $ICLOUD_LINK exists but is not a symlink."
+  echo "❌ $ICLOUD_LINK exists and is not a symlink."
   exit 1
 
 else
@@ -76,7 +73,6 @@ SSH_KEYS=(
   "$ICLOUD_LINK/.id_ed25519"
 )
 
-# Verify all configured private keys
 for SSH_KEY in "${SSH_KEYS[@]}"; do
 
   if [[ ! -f "$SSH_KEY" ]]; then
@@ -84,7 +80,6 @@ for SSH_KEY in "${SSH_KEYS[@]}"; do
     exit 1
   fi
 
-  # Secure private key permissions
   chmod 600 "$SSH_KEY"
 
 done
@@ -92,41 +87,14 @@ done
 echo "🔑 Loading SSH identities from macOS Keychain..."
 
 /usr/bin/ssh-add --apple-load-keychain || {
-  echo "ℹ️ No Keychain identities loaded. Checking configured keys..."
+  echo "ℹ️ No existing Keychain identities loaded."
 }
 
-# Check whether a key is already present in the agent
-agent_has_key() {
-  local key="$1"
-  local fingerprint
-  local loaded_fingerprints
-
-  fingerprint="$(
-    /usr/bin/ssh-keygen -lf "$key" | awk '{print $2}'
-  )"
-
-  loaded_fingerprints="$(
-    /usr/bin/ssh-add -l 2> /dev/null \
-      | awk '{print $2}' || true
-  )"
-
-  grep -Fxq "$fingerprint" <<< "$loaded_fingerprints"
-}
-
-# Add any configured key not yet loaded
 for SSH_KEY in "${SSH_KEYS[@]}"; do
 
-  if agent_has_key "$SSH_KEY"; then
+  echo "🔐 Adding $(basename "$SSH_KEY")..."
 
-    echo "✅ Already loaded: $(basename "$SSH_KEY")"
-
-  else
-
-    echo "🔐 Adding $(basename "$SSH_KEY") to Keychain and SSH agent..."
-
-    /usr/bin/ssh-add --apple-use-keychain "$SSH_KEY"
-
-  fi
+  /usr/bin/ssh-add --apple-use-keychain "$SSH_KEY"
 
 done
 
@@ -160,10 +128,8 @@ if [[ ! -x "$BREW" ]]; then
 
 fi
 
-# Initialize Homebrew environment
 eval "$("$BREW" shellenv)"
 
-# Explicitly preserve the expected prefix
 export HOMEBREW_PREFIX="/opt/homebrew"
 
 echo "✅ Homebrew ready."
@@ -191,157 +157,135 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock show-recents -bool false
 
 # ----------------------------------------------------------
-# Finder
+# Finder & .DS_Store
 # ----------------------------------------------------------
 
 echo "🧭 Configuring Finder..."
 
-# Prevent Finder from overwriting preferences during configuration
-osascript -e 'tell application "Finder" to quit' > /dev/null 2>&1 || true
-sleep 1
+# Allow quitting Finder with ⌘Q
+defaults write com.apple.finder QuitMenuItem -bool true
 
-# General settings
-defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+# Prevent .DS_Store on network shares
+defaults write com.apple.desktopservices \
+  DSDontWriteNetworkStores -bool true
 
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
-
-# Default View: List
-defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
-
-# Search results: List
-defaults write com.apple.finder FXPreferredSearchViewStyle -string "Nlsv"
-
-# Group By: None
-defaults write com.apple.finder FXPreferredGroupBy -string "None"
-defaults write com.apple.finder FXArrangeGroupViewBy -string "None"
-
-# Folders first in Finder windows
-defaults write com.apple.finder _FXSortFoldersFirst -bool true
-
-# Folders first on Desktop
-defaults write com.apple.finder _FXSortFoldersFirstOnDesktop -bool true
+# Prevent .DS_Store on removable USB volumes
+defaults write com.apple.desktopservices \
+  DSDontWriteUSBStores -bool true
 
 # ----------------------------------------------------------
-# Finder: Sort by Name
+# Finder: Optional Complete Reset
 # ----------------------------------------------------------
 
-echo "📂 Configuring Finder sorting..."
+reset_finder() {
 
-FINDER_PREFS_TMP="$(mktemp "${TMPDIR:-/tmp}/Finder.XXXXXX.plist")"
+  echo "🧹 Resetting Finder to macOS defaults..."
 
-defaults export com.apple.finder "$FINDER_PREFS_TMP"
+  local SAVED_STATE="$HOME/Library/Saved Application State/com.apple.finder.savedState"
+  local FAVORITES_DIR="$HOME/Library/Application Support/com.apple.sharedfilelist"
 
-# Ensure a dictionary exists in the exported plist
-plist_ensure_dict() {
-  local path="$1"
+  local DS_STORE_COUNT=0
+  local DS_STORE
+  local FILE
 
-  if ! /usr/libexec/PlistBuddy \
-    -c "Print $path" "$FINDER_PREFS_TMP" > /dev/null 2>&1; then
+  # Quit Finder
+  osascript -e 'tell application "Finder" to quit' \
+    > /dev/null 2>&1 || true
 
-    /usr/libexec/PlistBuddy \
-      -c "Add $path dict" "$FINDER_PREFS_TMP" > /dev/null
+  sleep 1
+
+  # Reset Finder preferences
+  echo "🗑️ Removing Finder preferences..."
+
+  defaults delete com.apple.finder \
+    2> /dev/null || true
+
+  defaults delete com.apple.sidebarlists \
+    2> /dev/null || true
+
+  # Restore default filename extension preference
+  defaults delete NSGlobalDomain AppleShowAllExtensions \
+    2> /dev/null || true
+
+  # Remove saved Finder window state
+  if [[ -d "$SAVED_STATE" ]]; then
+    rm -rf "$SAVED_STATE"
+  fi
+
+  # Reset Finder sidebar favorites
+  if [[ -d "$FAVORITES_DIR" ]]; then
+
+    for FILE in "$FAVORITES_DIR"/com.apple.LSSharedFileList.FavoriteItems.sfl*; do
+
+      [[ -f "$FILE" ]] || continue
+
+      rm -f "$FILE"
+
+    done
 
   fi
+
+  # Remove .DS_Store throughout the home directory
+  # and ALL currently mounted volumes.
+
+  echo "🗂️ Removing .DS_Store files..."
+
+  local SEARCH_ROOTS=("$HOME")
+
+  if [[ -d /Volumes ]]; then
+    SEARCH_ROOTS+=(/Volumes)
+  fi
+
+  while IFS= read -r -d '' DS_STORE; do
+
+    if rm -f "$DS_STORE" 2> /dev/null; then
+      DS_STORE_COUNT=$((DS_STORE_COUNT + 1))
+    fi
+
+  done < <(
+    find "${SEARCH_ROOTS[@]}" \
+      -type f \
+      -name ".DS_Store" \
+      -print0 2> /dev/null
+  )
+
+  echo "🗑️ Removed $DS_STORE_COUNT .DS_Store files."
+
+  echo "✅ Finder preferences reset."
+
 }
 
-# Set a string, creating the key if necessary
-plist_set_string() {
-  local path="$1"
-  local value="$2"
-
-  if ! /usr/libexec/PlistBuddy \
-    -c "Set $path $value" "$FINDER_PREFS_TMP" > /dev/null 2>&1; then
-
-    /usr/libexec/PlistBuddy \
-      -c "Add $path string $value" "$FINDER_PREFS_TMP" > /dev/null
-
-  fi
-}
-
-# Standard and extended Finder view settings
-for ROOT in StandardViewSettings FK_StandardViewSettings; do
-
-  plist_ensure_dict ":$ROOT"
-
-  # List View: sort by Name
-  for VIEW_SETTINGS in ExtendedListViewSettingsV2 ListViewSettings; do
-
-    plist_ensure_dict ":$ROOT:$VIEW_SETTINGS"
-
-    plist_set_string \
-      ":$ROOT:$VIEW_SETTINGS:sortColumn" \
-      "name"
-
-  done
-
-  # Icon View: arrange by Name
-  plist_ensure_dict ":$ROOT:IconViewSettings"
-
-  plist_set_string \
-    ":$ROOT:IconViewSettings:arrangeBy" \
-    "name"
-
-done
-
-# Desktop Icon View: arrange by Name
-plist_ensure_dict ":DesktopViewSettings"
-plist_ensure_dict ":DesktopViewSettings:IconViewSettings"
-
-plist_set_string \
-  ":DesktopViewSettings:IconViewSettings:arrangeBy" \
-  "name"
-
-# Import updated Finder preferences
-defaults import com.apple.finder "$FINDER_PREFS_TMP"
-
-rm -f "$FINDER_PREFS_TMP"
-FINDER_PREFS_TMP=""
-
 # ----------------------------------------------------------
-# Finder: Optional complete View reset
+# Execute Finder reset only when requested
 # ----------------------------------------------------------
 
-if [[ "${YADM_RESET_FINDER_VIEWS:-0}" == "1" ]]; then
+case "${YADM_RESET_FINDER:-0}" in
 
-  echo "🧹 Resetting folder-specific Finder settings..."
+  1)
+    reset_finder
+    ;;
 
-  if [[ "${YADM_KEEP_DESKTOP_LAYOUT:-0}" == "1" ]]; then
+  0)
+    echo "⏭️ Skipping Finder reset."
+    ;;
 
-    echo "   Preserving Desktop icon layout..."
+  *)
+    echo "❌ Invalid YADM_RESET_FINDER value."
+    exit 1
+    ;;
 
-    DELETED_COUNT="$(
-      find "$HOME" \
-        -type f \
-        -name ".DS_Store" \
-        ! -path "$HOME/Desktop/.DS_Store" \
-        -print -delete 2> /dev/null \
-        | wc -l | tr -d ' ' || true
-    )"
-
-  else
-
-    DELETED_COUNT="$(
-      find "$HOME" \
-        -type f \
-        -name ".DS_Store" \
-        -print -delete 2> /dev/null \
-        | wc -l | tr -d ' ' || true
-    )"
-
-  fi
-
-  echo "✅ Removed $DELETED_COUNT .DS_Store files."
-
-else
-
-  echo "⏭️ Skipping .DS_Store cleanup."
-
-fi
+esac
 
 # ----------------------------------------------------------
+# Finder: Allow quitting after reset
+# ----------------------------------------------------------
+
+# Reset may have deleted the Finder preference domain.
+defaults write com.apple.finder QuitMenuItem -bool true
+
+# ==========================================================
 # Trackpad & Keyboard
-# ----------------------------------------------------------
+# ==========================================================
 
 echo "⌨️ Configuring keyboard and trackpad..."
 
@@ -370,6 +314,23 @@ if [[ -f "$HOME/Brewfile" ]]; then
 fi
 
 # ==========================================================
+# mise
+# ==========================================================
+
+if [[ -x "$HOMEBREW_PREFIX/bin/mise" ]]; then
+
+  echo "🛠️ Installing tools from mise config..."
+
+  (
+    cd "$HOME"
+    "$HOMEBREW_PREFIX/bin/mise" install
+  )
+
+  echo "✅ mise tools installed."
+
+fi
+
+# ==========================================================
 # Touch ID for sudo
 # ==========================================================
 
@@ -379,85 +340,65 @@ PAM_FILE="/etc/pam.d/sudo"
 PAM_LOCAL="/etc/pam.d/sudo_local"
 PAM_TEMPLATE="/etc/pam.d/sudo_local.template"
 
-# Check that the system PAM configuration supports sudo_local
 if grep -Eq \
   '^[[:space:]]*auth[[:space:]]+include[[:space:]]+sudo_local([[:space:]]|$)' \
-  "$PAM_FILE" \
-  || grep -Eq \
-    '^[[:space:]]*#[[:space:]]*include[[:space:]]+sudo_local([[:space:]]|$)' \
-    "$PAM_FILE"; then
+  "$PAM_FILE"; then
 
-  # Skip if Touch ID is already configured
-  if grep -Eq \
-    '^[[:space:]]*auth[[:space:]].*pam_tid\.so' \
-    "$PAM_LOCAL" 2> /dev/null; then
+  if [[ ! -f "$PAM_LOCAL" ]]; then
 
-    echo "✅ Touch ID is already configured."
+    if [[ -f "$PAM_TEMPLATE" ]]; then
 
-  else
-
-    # Preserve existing local configuration before modifying it
-    if [[ -e "$PAM_LOCAL" ]]; then
-
-      PAM_BACKUP="${PAM_LOCAL}.yadm-backup-$(date +%Y%m%d-%H%M%S)"
-
-      echo "📋 Backing up existing PAM configuration..."
-      sudo cp -p "$PAM_LOCAL" "$PAM_BACKUP"
-
-    elif [[ -f "$PAM_TEMPLATE" ]]; then
-
-      echo "📋 Creating local PAM configuration from Apple template..."
+      echo "📋 Creating sudo_local from Apple template..."
       sudo cp -p "$PAM_TEMPLATE" "$PAM_LOCAL"
 
     else
 
-      echo "📋 Creating local PAM configuration..."
+      echo "📋 Creating sudo_local..."
 
       printf '%s\n' \
         "# Local sudo configuration managed by yadm" \
-        "auth       sufficient     pam_tid.so" \
         | sudo tee "$PAM_LOCAL" > /dev/null
-
-    fi
-
-    # Uncomment Apple's template line if present
-    if grep -Eq \
-      '^[[:space:]]*#[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_tid\.so' \
-      "$PAM_LOCAL"; then
-
-      sudo /usr/bin/sed -E -i '' \
-        's/^[[:space:]]*#[[:space:]]*(auth[[:space:]]+sufficient[[:space:]]+pam_tid\.so.*)$/\1/' \
-        "$PAM_LOCAL"
-
-    # Otherwise append the configuration
-    elif ! grep -Eq \
-      '^[[:space:]]*auth[[:space:]].*pam_tid\.so' \
-      "$PAM_LOCAL"; then
-
-      printf '\nauth       sufficient     pam_tid.so\n' \
-        | sudo tee -a "$PAM_LOCAL" > /dev/null
-
-    fi
-
-    # Verify the resulting configuration
-    if grep -Eq \
-      '^[[:space:]]*auth[[:space:]].*pam_tid\.so' \
-      "$PAM_LOCAL"; then
-
-      echo "✅ Touch ID enabled successfully."
-
-    else
-
-      echo "❌ Could not verify Touch ID PAM configuration."
-      exit 1
 
     fi
 
   fi
 
+  if grep -Eq \
+    '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_tid\.so([[:space:]]|$)' \
+    "$PAM_LOCAL"; then
+
+    echo "✅ Touch ID is already configured."
+
+  else
+
+    PAM_BACKUP="${PAM_LOCAL}.yadm-backup-$(date +%Y%m%d-%H%M%S)"
+
+    echo "📋 Backing up existing PAM configuration..."
+    sudo cp -p "$PAM_LOCAL" "$PAM_BACKUP"
+
+    echo "🔐 Enabling Touch ID..."
+
+    printf '\nauth       sufficient     pam_tid.so\n' \
+      | sudo tee -a "$PAM_LOCAL" > /dev/null
+
+  fi
+
+  if grep -Eq \
+    '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_tid\.so([[:space:]]|$)' \
+    "$PAM_LOCAL"; then
+
+    echo "✅ Touch ID enabled successfully."
+
+  else
+
+    echo "❌ Could not verify Touch ID configuration."
+    exit 1
+
+  fi
+
 else
 
-  echo "⚠️ sudo_local is not included in the system PAM configuration."
+  echo "⚠️ sudo_local is not included in /etc/pam.d/sudo."
   echo "   Skipping Touch ID configuration."
 
 fi
@@ -493,3 +434,5 @@ killall Finder Dock > /dev/null 2>&1 || true
 open -a Finder
 
 echo "✅ Bootstrap complete! Your environment is ready."
+
+echo "ℹ️ Log out and back in to apply .DS_Store restrictions."

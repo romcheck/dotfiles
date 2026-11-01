@@ -1,0 +1,19 @@
+thresholds:
+  utilization:
+    critical: 90
+    warn: 80
+views:
+  v1/nodes:
+    columns:
+      - name: ZONE
+        path: /metadata/labels/topology.kubernetes.io~1zone
+      - builtin: INTERNAL-IP
+        name: INTERNAL-IP
+  v1/pods:
+    columns:
+      - name: NODE IP
+        path: /status/hostIP
+  v1/persistentvolumeclaims:
+    columns:
+      - name: CLASS
+        path: /spec/storageClassName
