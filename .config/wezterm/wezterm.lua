@@ -135,6 +135,11 @@ config.font_rules = {
 
 config.keys = {
   {
+    key = 't',
+    mods = 'CTRL',
+    action = wezterm.action.RotatePanes 'Clockwise',
+  },
+  {
     key = 'j',
     mods = 'CMD',
     action = wezterm.action.ActivatePaneDirection 'Next',
